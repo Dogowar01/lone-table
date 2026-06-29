@@ -504,8 +504,12 @@ select option { background: #1e1c1a; }
       </div>
 
       <div class="card">
-        <div class="card-title">Stats <span style="font-weight:normal;text-transform:none;letter-spacing:0;color:var(--dim);font-size:10px">(1–3 each)</span></div>
-        <p style="font-size:12px;color:var(--dim);margin-bottom:10px">Edge = speed & evasion · Heart = resolve & persuasion · Iron = strength & combat · Shadow = stealth & deception · Wits = perception & survival</p>
+        <div class="card-title">Stats</div>
+        <p style="font-size:12px;color:var(--dim);margin-bottom:6px">Edge = speed &amp; evasion · Heart = resolve &amp; persuasion · Iron = strength &amp; combat · Shadow = stealth &amp; deception · Wits = perception &amp; survival</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span style="font-size:12px;color:var(--dim)">Distribute your points — each stat ranges 1–3.</span>
+          <span id="stat-pool-display" style="font-family:var(--mono);font-size:13px;color:var(--accent);white-space:nowrap"></span>
+        </div>
         <div class="stat-grid" id="stat-grid"></div>
       </div>
 
@@ -638,37 +642,24 @@ select option { background: #1e1c1a; }
 
       <div class="card" style="border-left:3px solid var(--accent)">
         <div class="card-title">What's in a pack?</div>
-        <p style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:8px">
-          Every setting pack contains the same building blocks, flavoured for its setting:
-        </p>
-        <ul style="font-size:13px;color:var(--text);line-height:1.8;padding-left:18px">
-          <li><strong style="color:var(--head)">Location prompts</strong> — named, evocative places to discover</li>
-          <li><strong style="color:var(--head)">NPC tables</strong> — who lives here, their role and one defining trait</li>
-          <li><strong style="color:var(--head)">Complication table</strong> — things that go wrong in ways specific to this world</li>
-          <li><strong style="color:var(--head)">Scenario seeds</strong> — a vow already in motion with a hook and first scene</li>
-          <li><strong style="color:var(--head)">Custom oracles</strong> — tables unique to the setting (weather, tide, rumour, etc.)</li>
+        <ul style="font-size:13px;color:var(--text);line-height:1.9;padding-left:18px">
+          <li><strong style="color:var(--head)">Location prompts</strong> — named, evocative places to drop into your session</li>
+          <li><strong style="color:var(--head)">Scenario seeds</strong> — a vow already in motion with a hook and opening scene</li>
+          <li><strong style="color:var(--head)">Custom oracle tables</strong> — setting-specific tables (weather, encounters, NPCs, complications) added directly to your oracle on the Play screen</li>
         </ul>
       </div>
 
-      <div class="card" style="border-left:3px solid var(--green)">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
-          <div>
-            <div class="pack-name">The Drowned Coast</div>
-            <div class="pack-meta">Coming soon — maritime horror &amp; coastal wilderness</div>
-            <div class="pack-tables">
-              12 coastal locations · Tide &amp; Weather oracle · Coastal Encounter table<br>
-              10 NPC entries · 8 complications · 6 scenario seeds
-            </div>
-          </div>
-          <span style="font-size:11px;color:var(--dim);border:1px solid var(--border);padding:2px 8px;border-radius:3px;white-space:nowrap">In dev</span>
-        </div>
+      <h3 style="margin-bottom:10px">Available packs</h3>
+      <div id="builtin-packs"></div>
+
+      <h3 style="margin-top:16px;margin-bottom:10px">Installed</h3>
+      <div id="installed-packs">
+        <p style="font-size:13px;color:var(--dim)">No custom packs installed.</p>
       </div>
 
-      <div id="installed-packs"></div>
-
-      <div class="card">
-        <div class="card-title">Import a pack</div>
-        <p style="font-size:12px;color:var(--dim);margin-bottom:12px">Load a .json setting pack file. Its oracle tables will appear in the oracle selector on the Play screen.</p>
+      <div class="card" style="margin-top:4px">
+        <div class="card-title">Import a custom pack</div>
+        <p style="font-size:12px;color:var(--dim);margin-bottom:12px">Have a .json pack file? Import it here. Its oracle tables unlock instantly on the Play screen.</p>
         <label class="btn" style="cursor:pointer;display:inline-block">
           Choose .json file
           <input type="file" accept=".json" id="pack-file" onchange="importPack(event)" style="display:none">
@@ -845,6 +836,46 @@ const MOVES = [
 // ═══════════════════════════════════════════════════
 // ORACLE TABLES
 // ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// BUILT-IN SETTING PACKS
+// ═══════════════════════════════════════════════════
+const BUILT_IN_PACKS = [
+  {
+    id: 'drowned-coast',
+    name: 'The Drowned Coast',
+    tagline: 'Maritime horror & coastal wilderness',
+    description: 'Flooded shores, wrecked galleons, salt-bleached villages, and things that follow ships home.',
+    locationPrompts: [
+      'A tidal cave that floods in under an hour — something lives in the back of it',
+      'The wreck of the Ironsong, half-buried in black sand, listing hard to starboard',
+      'A salt-bleached fishing village built on stilts; three houses burned recently',
+      'A lighthouse no one maintains, but the light still turns every night',
+      'A kelp-choked sea-stack with a ruined stone tower at its peak',
+      'A shingle beach scattered with crates from a ship that sank six months ago',
+      'A smugglers\' cove accessible only at low tide — two boats are hidden there now',
+      'A flooded chapel, its bell still audible on calm mornings',
+      'A sea-fort built on a sandbar that only appears at the lowest spring tides',
+      'A rope-bridge between two headlands, rotting — someone has crossed it recently',
+      'A whaling station long abandoned — the processing vats are full of something new',
+      'A graveyard of anchors, chains, and masts — the bones of a hundred ships'
+    ],
+    scenarioSeeds: [
+      { title:'The Ironsong', vow:'I will find out what happened to the Ironsong and bring the truth home', rank:'formidable' },
+      { title:'The Light That Turns', vow:'I will discover what keeps the lighthouse burning and end it', rank:'dangerous' },
+      { title:'The Crate', vow:'I will find the sealed crate and decide what to do with what\'s inside', rank:'extreme' },
+      { title:'The Stilt Village', vow:'I will find out who burned the houses and protect what remains of this place', rank:'dangerous' },
+      { title:'The Drowned Bell', vow:'I will silence the bell beneath the chapel and lay to rest what rings it', rank:'formidable' },
+      { title:'The Spring Tide', vow:'I will be here when the sea-fort reappears and claim what it holds', rank:'extreme' }
+    ],
+    customOracles: [
+      { id:'dc-tide', name:'Tide & Weather', entries:['Dead calm — the sea is black glass, nothing moves','Sea mist rolling in fast, visibility dropping to twenty yards','Spring tide — the water is higher than expected, paths are cut off','Storm building on the horizon, six hours away at most','Neap tide — the water is low, things usually hidden are briefly visible','Rain, heavy, the kind that fills boots and dulls sound','Fog bank sitting on the headland, showing no sign of lifting','Wind from the north — cold, salt-laden, smelling of deep water','A lull between squalls — clear weather, not for long','Rip current running along the beach, dangerous to swim'] },
+      { id:'dc-encounter', name:'Coastal Encounter', entries:['A ship\'s boat washed up with supplies intact but no crew','A figure standing at the waterline, not moving, facing the sea','Wreckage from something recent — the wood is barely waterlogged','A fisherman who won\'t say where he\'s been or what he caught','Smugglers moving crates along the beach at speed — they see you','A child standing on the cliff above, watching, gone when you look again','A sealed chest half-buried in shingle, lock intact','The body of a sailor, no wounds, expression of terror','A flock of seabirds all facing the same direction in silence','Lights moving under the water in the shallows — no natural explanation','A local who claims to know what happened to the last group that came here','Fresh drag-marks in the sand, from the waterline into the treeline'] },
+      { id:'dc-npc', name:'NPC — Drowned Coast', entries:['Harbourmaster, 60s, knows every ship, owes a debt to someone dangerous','Fisherman\'s widow, pragmatic, will help for practical reasons not sentimental ones','Merchant\'s factor, nervous, following orders they\'re uncomfortable with','Wreckers\' lookout — young, not yet hardened, might be turned','Retired naval officer, drinks too much, knows the coast better than anyone alive','Rope-maker\'s apprentice, sees everything from the clifftop, doesn\'t know what it means','Customs inspector, ambitious, has his own investigation running','Kelp-cutter, works alone, has found things washed up they haven\'t told anyone','Ship\'s cook, only survivor of something, won\'t discuss it but will talk around it','Village elder, last of the old families, keeps the old knowledge'] },
+      { id:'dc-complication', name:'Complication — Drowned Coast', entries:['The tide comes in faster than expected — a route back is cut off','The wreck shifts in the swell, something unsettled inside it','Someone else was here first — and left in a hurry','The mist closes in and your landmark disappears','A rope, board, or handhold fails at the worst possible moment','A boat you needed is gone — taken, sunk, or drifted','Someone in the village has sent word about you to the wrong people','The storm arrives hours early'] }
+    ]
+  }
+];
+
 const CORE_ORACLES = [
   { id:'action', name:'Action',
     entries:['Abandon','Acquire','Advance','Arrive','Avenge','Avoid','Begin','Breach','Build','Burn','Capture','Challenge','Change','Clash','Command','Construct','Create','Damage','Decay','Defeat','Defend','Delay','Deliver','Demand','Destroy','Distract','Eliminate','Endure','Escalate','Explore','Fight','Find','Follow','Fortify','Gather','Guard','Guide','Harm','Hide','Hunt','Initiate','Invade','Investigate','Lead','Leave','Liberate','Locate','Lose','Manipulate','Mourn','Move','Negotiate','Oppose','Overwhelm','Patrol','Protect','Pursue','Raid','Reach','Release','Resist','Restore','Reveal','Risk','Rob','Search','Seize','Summon','Support','Surrender','Survey','Survive','Take','Transform','Travel','Uncover','Uphold','Weaken'] },
@@ -1196,17 +1227,45 @@ function saveChar() {
   document.getElementById('char-badge').textContent = S.char.name ? S.char.name.toUpperCase() : '';
 }
 
+function adjustStat(stat, delta) {
+  const POOL = 9;
+  const cur = S.char.stats[stat] || 1;
+  const spent = Object.values(S.char.stats).reduce((a,b) => a+b, 0);
+  const remaining = POOL - spent;
+  if (delta > 0 && (cur >= 3 || remaining <= 0)) return;
+  if (delta < 0 && cur <= 1) return;
+  S.char.stats[stat] = cur + delta;
+  saveState();
+  renderChar();
+}
+
 function renderChar() {
   document.getElementById('cname').value = S.char.name || '';
   document.getElementById('char-badge').textContent = S.char.name ? S.char.name.toUpperCase() : '';
 
-  // Stats
+  // Stats — point buy
+  const POOL = 9; // total points across all 5 stats (min 1 each = 5 baseline, 4 bonus)
+  const spent = Object.values(S.char.stats).reduce((a,b) => a+b, 0);
+  const remaining = POOL - spent;
+  const poolEl = document.getElementById('stat-pool-display');
+  if (poolEl) poolEl.textContent = remaining === 0 ? 'Locked ✓' : remaining + ' pt' + (remaining !== 1 ? 's' : '') + ' remaining';
+  if (poolEl) poolEl.style.color = remaining === 0 ? 'var(--green)' : remaining < 0 ? 'var(--red)' : 'var(--accent)';
+
   const grid = document.getElementById('stat-grid');
   grid.innerHTML = '';
   ['edge','heart','iron','shadow','wits'].forEach(s => {
+    const val = S.char.stats[s] || 1;
+    const canUp = val < 3 && remaining > 0;
+    const canDn = val > 1;
     const cell = document.createElement('div');
     cell.className = 'stat-cell';
-    cell.innerHTML = `<div class="stat-name">${s}</div><input class="stat-inp" type="number" min="1" max="3" value="${S.char.stats[s]||1}" onchange="S.char.stats['${s}']=Math.max(1,Math.min(3,parseInt(this.value)||1));saveState()">`;
+    cell.innerHTML = `
+      <div class="stat-name">${s}</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin-top:4px">
+        <button onclick="adjustStat('${s}',-1)" style="width:22px;height:22px;border-radius:4px;border:1px solid var(--border);background:rgba(30,28,26,0.9);color:${canDn?'var(--text)':'var(--border)'};font-size:14px;cursor:${canDn?'pointer':'default'};line-height:1" ${canDn?'':'disabled'}>−</button>
+        <span style="font-family:var(--mono);font-size:20px;color:var(--accent);min-width:20px;text-align:center">${val}</span>
+        <button onclick="adjustStat('${s}',1)"  style="width:22px;height:22px;border-radius:4px;border:1px solid var(--border);background:rgba(30,28,26,0.9);color:${canUp?'var(--text)':'var(--border)'};font-size:14px;cursor:${canUp?'pointer':'default'};line-height:1" ${canUp?'':'disabled'}>+</button>
+      </div>`;
     grid.appendChild(cell);
   });
 
@@ -1421,17 +1480,60 @@ function cancelNote() { document.getElementById('note-text').value=''; document.
 // WORLD — PACKS
 // ═══════════════════════════════════════════════════
 function renderWorld() {
+  // Built-in packs
+  const builtinEl = document.getElementById('builtin-packs');
+  builtinEl.innerHTML = '';
+  BUILT_IN_PACKS.forEach(p => {
+    const installed = S.packs.find(x => x.id === p.id);
+    const card = document.createElement('div');
+    card.className = 'pack-card';
+    const tc = p.customOracles.length, sc = p.scenarioSeeds.length, lc = p.locationPrompts.length;
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div style="flex:1">
+          <div class="pack-name">${p.name}</div>
+          <div class="pack-meta" style="margin-bottom:6px">${p.tagline}</div>
+          <div class="pack-tables">${lc} locations · ${sc} scenario seeds · ${tc} oracle tables</div>
+        </div>
+        ${installed
+          ? `<button class="btn btn-sm btn-danger" onclick="removePack('${p.id}')">Remove</button>`
+          : `<button class="btn btn-sm btn-accent" onclick="installBuiltin('${p.id}')">Install</button>`}
+      </div>`;
+    builtinEl.appendChild(card);
+  });
+
+  // Custom (imported) packs
   const el = document.getElementById('installed-packs');
+  const custom = S.packs.filter(p => !BUILT_IN_PACKS.find(b => b.id === p.id));
+  if (!custom.length) {
+    el.innerHTML = '<p style="font-size:13px;color:var(--dim)">No custom packs installed.</p>';
+    return;
+  }
   el.innerHTML = '';
-  if (!S.packs.length) return;
-  const h = document.createElement('h3'); h.style.marginTop = '8px'; h.textContent = 'Installed'; el.appendChild(h);
-  S.packs.forEach((p, i) => {
+  custom.forEach((p, i) => {
     const card = document.createElement('div');
     card.className = 'pack-card';
     const tc = (p.customOracles||[]).length, sc = (p.scenarioSeeds||[]).length;
-    card.innerHTML = `<div class="pack-name">${p.name}</div><div class="pack-meta">${tc} oracle table${tc!==1?'s':''} · ${sc} scenario seed${sc!==1?'s':''}</div><button class="btn btn-sm btn-danger" onclick="removePack(${i})">Remove</button>`;
+    card.innerHTML = `<div class="pack-name">${p.name}</div><div class="pack-meta">${tc} oracle table${tc!==1?'s':''} · ${sc} scenario seed${sc!==1?'s':''}</div><button class="btn btn-sm btn-danger" style="margin-top:8px" onclick="removePack('${p.id}')">Remove</button>`;
     el.appendChild(card);
   });
+}
+
+function installBuiltin(id) {
+  const p = BUILT_IN_PACKS.find(x => x.id === id);
+  if (!p || S.packs.find(x => x.id === id)) return;
+  S.packs.push(p);
+  saveState(); renderWorld(); fillOracleTables();
+  toast(`"${p.name}" installed`);
+}
+
+function removePack(id) {
+  const idx = S.packs.findIndex(p => p.id === id);
+  if (idx === -1) return;
+  const name = S.packs[idx].name;
+  S.packs.splice(idx, 1);
+  saveState(); renderWorld(); fillOracleTables();
+  toast(`"${name}" removed`);
 }
 function importPack(ev) {
   const file = ev.target.files[0]; if(!file) return;
@@ -1448,7 +1550,6 @@ function importPack(ev) {
   r.readAsText(file);
   ev.target.value = '';
 }
-function removePack(i) { const name = S.packs[i].name; S.packs.splice(i,1); saveState(); renderWorld(); fillOracleTables(); toast(`"${name}" removed`); }
 
 // ═══════════════════════════════════════════════════
 // UTILS

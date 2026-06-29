@@ -47,8 +47,21 @@ html, body {
   overflow: hidden;
 }
 
+/* ── Full-screen background ───────────────────────── */
+#bg-layer {
+  position: fixed;
+  inset: 0;
+  background-image: url('bg.jpg');
+  background-size: cover;
+  background-position: center 30%;
+  filter: brightness(0.22) saturate(0.6);
+  z-index: 0;
+}
+
 /* ── Layout ───────────────────────────────────────── */
 #app {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   height: 100dvh;
@@ -57,25 +70,9 @@ html, body {
 }
 
 #header {
-  position: relative;
   flex-shrink: 0;
-  height: 160px;
-  overflow: hidden;
-}
-#header-bg {
-  position: absolute; inset: 0;
-  background-image: url('bg.png');
-  background-size: cover;
-  background-position: center 30%;
-  filter: brightness(0.35) saturate(0.7);
-}
-#header-content {
-  position: relative;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 20px 16px;
+  padding: 14px 20px 12px;
+  background: linear-gradient(to bottom, rgba(14,13,12,0.7) 0%, rgba(14,13,12,0.0) 100%);
 }
 #app-title {
   font-family: var(--font-serif);
@@ -96,7 +93,9 @@ html, body {
 #nav {
   flex-shrink: 0;
   display: flex;
-  background: var(--bg2);
+  background: rgba(14,13,12,0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   overflow-x: auto;
   scrollbar-width: none;
@@ -139,6 +138,12 @@ html, body {
   scrollbar-color: var(--border) transparent;
 }
 .screen.active { display: block; }
+
+.card {
+  background: rgba(22,21,19,0.82) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
 
 /* ── Components ───────────────────────────────────── */
 h2 {
@@ -599,13 +604,11 @@ select option { background: var(--bg3); }
 </style>
 </head>
 <body>
+<div id="bg-layer"></div>
 <div id="app">
   <div id="header">
-    <div id="header-bg"></div>
-    <div id="header-content">
-      <div id="app-title">The Lone Table</div>
-      <div id="char-name-display"></div>
-    </div>
+    <div id="app-title">The Lone Table</div>
+    <div id="char-name-display"></div>
   </div>
 
   <nav id="nav">
@@ -1040,7 +1043,7 @@ const MOVES = [
   {
     name: 'Battle',
     category: 'combat',
-    trigger: 'When you fight a battle and it's better left to the imagination…',
+    trigger: "When you fight a battle and it's better left to the imagination…",
     stats: ['edge','heart','iron','shadow','wits'],
     strongHit: 'You achieve your goal. Take +2 momentum.',
     weakHit: 'You achieve your goal but at great cost. Pay the Price.',

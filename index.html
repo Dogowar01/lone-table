@@ -14,24 +14,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&display=swap" rel="stylesheet">
 <style>
+/* ── Tokens ───────────────────────────────────────── */
 :root {
   --bg:        #0e0d0c;
   --bg2:       #161513;
   --bg3:       #1e1c1a;
   --border:    #2e2b27;
   --text:      #c8c0b4;
-  --text-dim:  #6b6560;
-  --text-head: #e8e0d4;
+  --dim:       #6b6560;
+  --head:      #e8e0d4;
   --accent:    #b87d4b;
-  --accent2:   #7a9e6e;
-  --danger:    #9e4b4b;
-  --match:     #7b6b9e;
-  --font-serif: 'Fraunces', Georgia, serif;
-  --font-sans:  system-ui, -apple-system, sans-serif;
-  --font-mono:  'Courier New', Courier, monospace;
-  --r:         6px;
-  --safe-top:  env(safe-area-inset-top, 0px);
-  --safe-bot:  env(safe-area-inset-bottom, 0px);
+  --green:     #7a9e6e;
+  --red:       #9e4b4b;
+  --purple:    #7b6b9e;
+  --serif:     'Fraunces', Georgia, serif;
+  --sans:      system-ui, -apple-system, sans-serif;
+  --mono:      'Courier New', Courier, monospace;
+  --r:         8px;
+  --safe-t:    env(safe-area-inset-top, 0px);
+  --safe-b:    env(safe-area-inset-bottom, 0px);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -40,1900 +41,1440 @@ html, body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-sans);
+  font-family: var(--sans);
   font-size: 15px;
-  line-height: 1.55;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
 }
 
-/* ── Full-screen background ───────────────────────── */
-#bg-layer {
-  position: fixed;
-  inset: 0;
-  background-image: url('bg.jpg');
-  background-size: cover;
-  background-position: center 30%;
-  filter: brightness(0.22) saturate(0.6);
-  z-index: 0;
+/* ── Background ───────────────────────────────────── */
+#bg {
+  position: fixed; inset: 0; z-index: 0;
+  background: url('bg.jpg') center 30% / cover no-repeat;
+  filter: brightness(0.18) saturate(0.55);
 }
 
-/* ── Layout ───────────────────────────────────────── */
+/* ── App shell ────────────────────────────────────── */
 #app {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
   height: 100dvh;
-  padding-top: var(--safe-top);
-  padding-bottom: var(--safe-bot);
+  padding-top: var(--safe-t);
+  padding-bottom: var(--safe-b);
 }
 
+/* ── Header ───────────────────────────────────────── */
 #header {
   flex-shrink: 0;
-  padding: 14px 20px 12px;
-  background: linear-gradient(to bottom, rgba(14,13,12,0.7) 0%, rgba(14,13,12,0.0) 100%);
+  padding: 12px 18px 10px;
+  background: linear-gradient(to bottom, rgba(14,13,12,0.85), transparent);
+  display: flex; align-items: baseline; gap: 10px;
 }
-#app-title {
-  font-family: var(--font-serif);
-  font-size: 28px;
-  font-weight: 400;
-  color: var(--text-head);
-  letter-spacing: 0.02em;
-  line-height: 1.1;
+#title {
+  font-family: var(--serif);
+  font-size: 22px; font-weight: 400;
+  color: var(--head); letter-spacing: 0.01em;
 }
-#char-name-display {
-  font-size: 12px;
-  color: var(--accent);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-top: 3px;
+#char-badge {
+  font-size: 11px; color: var(--accent);
+  letter-spacing: 0.08em; text-transform: uppercase;
 }
 
+/* ── Nav ──────────────────────────────────────────── */
 #nav {
   flex-shrink: 0;
   display: flex;
-  background: rgba(14,13,12,0.82);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  overflow-x: auto;
-  scrollbar-width: none;
+  background: rgba(14,13,12,0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(46,43,39,0.6);
+  overflow-x: auto; scrollbar-width: none;
 }
 #nav::-webkit-scrollbar { display: none; }
 
-.nav-btn {
-  flex: 1;
-  min-width: 56px;
-  padding: 10px 4px 8px;
-  background: none;
-  border: none;
+.nb {
+  flex: 1; min-width: 60px;
+  padding: 9px 4px 7px;
+  background: none; border: none;
   border-bottom: 2px solid transparent;
-  color: var(--text-dim);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  color: var(--dim); font-size: 9px;
+  letter-spacing: 0.07em; text-transform: uppercase;
   cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  transition: color 0.15s, border-color 0.15s;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  transition: color .15s, border-color .15s;
 }
-.nav-btn .icon { font-size: 18px; }
-.nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.nb .ic { font-size: 17px; }
+.nb.on { color: var(--accent); border-bottom-color: var(--accent); }
 
-#screens {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-}
+/* ── Screens ──────────────────────────────────────── */
+#screens { flex: 1; overflow: hidden; position: relative; }
+.scr { display: none; height: 100%; overflow-y: auto; padding: 18px 16px 24px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.scr.on { display: block; }
 
-.screen {
-  display: none;
-  height: 100%;
-  overflow-y: auto;
-  padding: 20px 16px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-}
-.screen.active { display: block; }
+/* ── Type ─────────────────────────────────────────── */
+h2 { font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--head); margin-bottom: 4px; }
+.screen-desc { font-size: 12px; color: var(--dim); margin-bottom: 18px; line-height: 1.5; }
+h3 { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
 
+/* ── Cards ────────────────────────────────────────── */
 .card {
-  background: rgba(22,21,19,0.82) !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(22,21,19,0.80);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(46,43,39,0.7);
+  border-radius: var(--r); padding: 16px; margin-bottom: 12px;
 }
+.card-title {
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+.card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* ── Components ───────────────────────────────────── */
-h2 {
-  font-family: var(--font-serif);
-  font-size: 20px;
-  font-weight: 400;
-  color: var(--text-head);
-  margin-bottom: 16px;
-}
-h3 {
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 8px;
-}
-
-.card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 16px;
-  margin-bottom: 12px;
-}
-
-label {
-  display: block;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 5px;
-}
-
+/* ── Forms ────────────────────────────────────────── */
+label { display: block; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--dim); margin-bottom: 5px; }
 input[type=text], input[type=number], select, textarea {
-  width: 100%;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  padding: 9px 12px;
-  outline: none;
-  transition: border-color 0.15s;
-  -webkit-appearance: none;
+  width: 100%; background: rgba(30,28,26,0.9);
+  border: 1px solid var(--border); border-radius: var(--r);
+  color: var(--text); font-family: var(--sans); font-size: 14px;
+  padding: 9px 12px; outline: none; -webkit-appearance: none;
+  transition: border-color .15s;
 }
 input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-textarea { resize: vertical; min-height: 64px; }
-select option { background: var(--bg3); }
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 13px;
-  padding: 9px 16px;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-  white-space: nowrap;
-}
-.btn:hover { background: var(--border); }
-.btn-accent { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn-accent:hover { filter: brightness(1.1); }
-.btn-danger { border-color: var(--danger); color: var(--danger); }
-.btn-sm { font-size: 11px; padding: 5px 10px; }
-
+textarea { resize: vertical; min-height: 70px; }
+select option { background: #1e1c1a; }
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
 .row { display: flex; gap: 8px; }
 .row > * { flex: 1; }
 
-.field { margin-bottom: 14px; }
-.field:last-child { margin-bottom: 0; }
-
-/* ── Dice / Results ───────────────────────────────── */
-#roll-result {
-  display: none;
-  margin-top: 16px;
+/* ── Buttons ──────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: rgba(30,28,26,0.9); border: 1px solid var(--border);
+  border-radius: var(--r); color: var(--text);
+  font-family: var(--sans); font-size: 13px;
+  padding: 9px 16px; cursor: pointer; white-space: nowrap;
+  transition: background .15s, border-color .15s;
 }
+.btn:hover { background: rgba(46,43,39,0.9); }
+.btn-accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn-accent:hover { filter: brightness(1.12); }
+.btn-danger { border-color: var(--red); color: #c47070; }
+.btn-danger:hover { background: rgba(158,75,75,0.15); }
+.btn-sm { font-size: 11px; padding: 5px 10px; }
+.btn-full { width: 100%; }
 
-.result-box {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 16px;
+/* ── Step indicator ───────────────────────────────── */
+.steps {
+  display: flex; gap: 0; margin-bottom: 16px;
+  background: rgba(14,13,12,0.5);
+  border: 1px solid var(--border); border-radius: var(--r);
+  overflow: hidden;
 }
-
-.dice-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-
-.die {
-  font-family: var(--font-mono);
-  font-size: 22px;
-  font-weight: bold;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg2);
+.step {
+  flex: 1; padding: 8px 6px;
+  text-align: center; font-size: 10px;
+  letter-spacing: 0.05em; color: var(--dim);
+  border-right: 1px solid var(--border);
   position: relative;
 }
-.die.action { border-color: var(--accent); color: var(--accent); }
-.die.challenge { color: var(--text); }
-.die.challenge.beaten { border-color: var(--accent2); color: var(--accent2); }
-.die.challenge.lost { border-color: var(--danger); color: var(--danger); }
-.die.challenge.match-die { border-color: var(--match); }
+.step:last-child { border-right: none; }
+.step.active { color: var(--accent); }
+.step-num { font-family: var(--mono); font-size: 14px; display: block; margin-bottom: 1px; }
 
-.die-label {
-  font-size: 9px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  text-align: center;
-  margin-top: 2px;
+/* ── Move trigger ─────────────────────────────────── */
+.trigger-box {
+  display: none;
+  font-family: var(--serif); font-style: italic;
+  font-size: 14px; color: var(--dim);
+  padding: 10px 14px; margin: 10px 0 4px;
+  border-left: 2px solid var(--accent);
+  background: rgba(184,125,75,0.06);
+  border-radius: 0 var(--r) var(--r) 0;
+  line-height: 1.6;
 }
+.trigger-box.on { display: block; }
 
-.outcome-badge {
-  display: inline-block;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 3px;
-  font-weight: 500;
-  margin-bottom: 10px;
+.stat-row { display: none; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.stat-row.on { display: flex; }
+.stat-chip {
+  padding: 7px 14px; border-radius: var(--r);
+  border: 1px solid var(--border); background: rgba(30,28,26,0.9);
+  color: var(--text); font-size: 13px; cursor: pointer;
+  transition: all .15s;
 }
-.outcome-badge.strong { background: rgba(122,158,110,0.2); color: var(--accent2); border: 1px solid rgba(122,158,110,0.4); }
-.outcome-badge.weak { background: rgba(184,125,75,0.2); color: var(--accent); border: 1px solid rgba(184,125,75,0.4); }
-.outcome-badge.miss { background: rgba(158,75,75,0.2); color: #c47070; border: 1px solid rgba(158,75,75,0.4); }
-.outcome-badge.match { background: rgba(123,107,158,0.2); color: #ab9fd4; border: 1px solid rgba(123,107,158,0.4); margin-left: 6px; }
+.stat-chip.on { border-color: var(--accent); color: var(--accent); background: rgba(184,125,75,0.12); }
+
+/* ── Dice ─────────────────────────────────────────── */
+.dice-row {
+  display: flex; align-items: flex-end; gap: 8px;
+  flex-wrap: wrap; margin-bottom: 14px;
+}
+.die-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.die {
+  width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 22px; font-weight: bold;
+  border: 2px solid var(--border); border-radius: 10px;
+  background: rgba(22,21,19,0.9);
+  position: relative; overflow: hidden;
+  transition: border-color .3s;
+}
+.die.rolling {
+  animation: shake 0.06s infinite;
+  border-color: var(--dim) !important;
+  color: var(--dim) !important;
+}
+@keyframes shake {
+  0%   { transform: translate(-1px, 1px) rotate(-0.5deg); }
+  25%  { transform: translate(1px, -1px) rotate(0.5deg); }
+  50%  { transform: translate(-1px, -1px) rotate(-0.5deg); }
+  75%  { transform: translate(1px, 1px) rotate(0.5deg); }
+  100% { transform: translate(-1px, 1px) rotate(-0.5deg); }
+}
+@keyframes pop-in {
+  0%   { transform: scale(0.7); opacity: 0.3; }
+  60%  { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.die.settled { animation: pop-in 0.25s ease-out both; }
+.die.action-die { border-color: var(--accent); color: var(--accent); }
+.die.score-die  { border-color: var(--accent); color: var(--accent); font-size: 18px; }
+.die.beat  { border-color: var(--green); color: var(--green); }
+.die.lost  { border-color: var(--red); color: #c47070; }
+.die.match-die { border-color: var(--purple) !important; }
+.die-lbl { font-size: 9px; color: var(--dim); letter-spacing: 0.05em; text-transform: uppercase; }
+.vs-lbl { font-family: var(--mono); color: var(--dim); font-size: 13px; padding-bottom: 18px; }
+
+/* ── Outcome ──────────────────────────────────────── */
+.outcome-area { display: none; }
+.outcome-area.on { display: block; }
+.badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.badge {
+  display: inline-block; font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 4px;
+}
+.badge-strong { background: rgba(122,158,110,0.2); color: var(--green); border: 1px solid rgba(122,158,110,0.4); }
+.badge-weak   { background: rgba(184,125,75,0.2);  color: var(--accent); border: 1px solid rgba(184,125,75,0.4); }
+.badge-miss   { background: rgba(158,75,75,0.2);   color: #c47070; border: 1px solid rgba(158,75,75,0.4); }
+.badge-match  { background: rgba(123,107,158,0.2); color: #ab9fd4; border: 1px solid rgba(123,107,158,0.4); }
 
 .outcome-text {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text);
-  border-top: 1px solid var(--border);
-  padding-top: 10px;
-  margin-top: 8px;
+  font-size: 14px; line-height: 1.7; color: var(--text);
+  border-top: 1px solid var(--border); padding-top: 12px;
 }
+.momentum-tip {
+  display: none; margin-top: 10px; padding: 10px 12px;
+  background: rgba(123,107,158,0.1); border: 1px solid rgba(123,107,158,0.3);
+  border-radius: var(--r); font-size: 12px; color: #ab9fd4;
+  align-items: center; gap: 8px;
+}
+.momentum-tip.on { display: flex; }
 
-.momentum-hint {
-  display: none;
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: rgba(123,107,158,0.1);
-  border: 1px solid rgba(123,107,158,0.3);
-  border-radius: var(--r);
-  font-size: 12px;
-  color: #ab9fd4;
-  gap: 8px;
-  align-items: center;
+/* ── How to play ──────────────────────────────────── */
+.howto {
+  background: rgba(14,13,12,0.6);
+  border: 1px solid var(--border); border-radius: var(--r);
+  margin-bottom: 14px; overflow: hidden;
 }
-.momentum-hint.visible { display: flex; }
-
-/* ── Tracks ───────────────────────────────────────── */
-.track {
-  display: flex;
-  gap: 4px;
-  margin-top: 4px;
+.howto-toggle {
+  width: 100%; padding: 11px 14px;
+  background: none; border: none; color: var(--dim);
+  font-family: var(--sans); font-size: 12px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  cursor: pointer; text-align: left; display: flex; justify-content: space-between;
 }
-.track-pip {
-  flex: 1;
-  height: 24px;
-  border-radius: 3px;
-  border: 1px solid var(--border);
-  background: var(--bg3);
-  cursor: pointer;
-  transition: background 0.1s;
-}
-.track-pip.filled { background: var(--accent); border-color: var(--accent); }
-.track-pip.filled.spirit { background: var(--accent2); border-color: var(--accent2); }
-.track-pip.filled.momentum { background: var(--match); border-color: var(--match); }
-
-.momentum-track {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 4px;
-}
-.momentum-num {
-  font-family: var(--font-mono);
-  font-size: 24px;
-  color: var(--match);
-  min-width: 40px;
-  text-align: center;
-}
-.momentum-controls { display: flex; gap: 4px; }
-
-/* ── Stat grid ────────────────────────────────────── */
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-  margin-bottom: 12px;
-}
-.stat-cell {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 8px 4px 6px;
-  text-align: center;
-}
-.stat-name {
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 3px;
-}
-.stat-val {
-  font-family: var(--font-mono);
-  font-size: 20px;
-  color: var(--accent);
-}
-.stat-edit input {
-  font-family: var(--font-mono);
-  font-size: 18px;
-  text-align: center;
-  color: var(--accent);
-  padding: 6px 2px;
-}
-
-/* ── Vows ─────────────────────────────────────────── */
-.vow-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 14px;
-  margin-bottom: 10px;
-}
-.vow-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
-  gap: 8px;
-}
-.vow-text {
-  font-family: var(--font-serif);
-  font-size: 16px;
-  color: var(--text-head);
-  font-style: italic;
-  flex: 1;
-}
-.vow-rank {
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  padding: 2px 6px;
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  white-space: nowrap;
-}
-.progress-row {
-  display: flex;
-  gap: 3px;
-  margin-bottom: 8px;
-}
-.progress-box {
-  flex: 1;
-  height: 18px;
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  background: var(--bg3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  color: var(--accent);
-  cursor: pointer;
-  transition: background 0.1s;
-}
-.progress-box.t1 { background: rgba(184,125,75,0.25); }
-.progress-box.t2 { background: rgba(184,125,75,0.5); }
-.progress-box.t3 { background: rgba(184,125,75,0.75); }
-.progress-box.t4 { background: var(--accent); }
-
-.vow-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-
-/* ── Log ──────────────────────────────────────────── */
-.log-entry {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 14px;
-  align-items: flex-start;
-}
-.log-ts {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  flex-shrink: 0;
-  padding-top: 2px;
-  min-width: 48px;
-}
-.log-body { flex: 1; }
-.log-type {
-  display: inline-block;
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 2px;
-}
-.log-summary {
-  font-size: 13px;
-  color: var(--text);
-  line-height: 1.5;
-}
+.howto-body { display: none; padding: 0 14px 14px; }
+.howto-body.on { display: block; }
+.howto-body ol { padding-left: 18px; }
+.howto-body li { font-size: 13px; color: var(--text); margin-bottom: 8px; line-height: 1.6; }
+.howto-body li strong { color: var(--head); }
 
 /* ── Oracle ───────────────────────────────────────── */
-#oracle-result-box { display: none; margin-top: 14px; }
-.oracle-result {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 14px;
-}
-.oracle-q {
-  font-family: var(--font-serif);
-  font-style: italic;
-  color: var(--text-dim);
-  font-size: 14px;
-  margin-bottom: 6px;
-}
-.oracle-ans {
-  font-size: 20px;
-  font-family: var(--font-serif);
-  color: var(--text-head);
-}
-.oracle-roll {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-dim);
-  margin-top: 4px;
-}
+.oracle-result { display: none; margin-top: 14px; }
+.oracle-result.on { display: block; }
+.oracle-q { font-family: var(--serif); font-style: italic; color: var(--dim); font-size: 14px; margin-bottom: 6px; }
+.oracle-ans { font-family: var(--serif); font-size: 22px; color: var(--head); margin-bottom: 4px; }
+.oracle-sub { font-family: var(--mono); font-size: 11px; color: var(--dim); }
 
-/* ── Assets / Bonds ───────────────────────────────── */
-.tag {
-  display: inline-block;
-  font-size: 11px;
-  padding: 3px 8px;
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  color: var(--text-dim);
-  margin: 2px;
+/* ── Tracks ───────────────────────────────────────── */
+.track { display: flex; gap: 4px; margin-top: 6px; }
+.pip {
+  flex: 1; height: 22px; border-radius: 4px;
+  border: 1px solid var(--border); background: rgba(30,28,26,0.8);
+  cursor: pointer; transition: background .1s;
 }
+.pip.h { background: var(--accent); border-color: var(--accent); }
+.pip.s { background: var(--green); border-color: var(--green); }
+
+.mom-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+.mom-num { font-family: var(--mono); font-size: 28px; color: var(--purple); min-width: 44px; text-align: center; }
+
+/* ── Stat grid ────────────────────────────────────── */
+.stat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 4px; }
+.stat-cell { background: rgba(30,28,26,0.8); border: 1px solid var(--border); border-radius: var(--r); padding: 8px 4px 6px; text-align: center; }
+.stat-name { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); margin-bottom: 4px; }
+.stat-inp { width: 100%; text-align: center; font-family: var(--mono); font-size: 20px; color: var(--accent); background: transparent; border: none; outline: none; padding: 0; }
+
+/* ── Tags ─────────────────────────────────────────── */
+.tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.tag { font-size: 12px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; color: var(--dim); cursor: pointer; }
+.tag:hover { border-color: var(--red); color: #c47070; }
+
+/* ── Vows ─────────────────────────────────────────── */
+.vow-card { background: rgba(22,21,19,0.80); backdrop-filter: blur(10px); border: 1px solid rgba(46,43,39,0.7); border-radius: var(--r); padding: 14px; margin-bottom: 10px; }
+.vow-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 10px; }
+.vow-text { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--head); flex: 1; }
+.vow-rank { font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--dim); padding: 2px 8px; border: 1px solid var(--border); border-radius: 3px; white-space: nowrap; }
+.prog-row { display: flex; gap: 3px; margin-bottom: 8px; }
+.pbox { flex: 1; height: 18px; border: 1px solid var(--border); border-radius: 2px; background: rgba(30,28,26,0.8); display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; transition: background .1s; }
+.pbox.t1 { background: rgba(184,125,75,0.2); }
+.pbox.t2 { background: rgba(184,125,75,0.45); }
+.pbox.t3 { background: rgba(184,125,75,0.7); }
+.pbox.t4 { background: var(--accent); color: #fff; }
+.vow-acts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+
+/* ── Journal tabs ─────────────────────────────────── */
+.jtabs { display: flex; gap: 0; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+.jtab { padding: 8px 16px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--dim); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: color .15s, border-color .15s; }
+.jtab.on { color: var(--accent); border-bottom-color: var(--accent); }
+.jpanel { display: none; }
+.jpanel.on { display: block; }
+
+/* ── Log ──────────────────────────────────────────── */
+.log-entry { display: flex; gap: 10px; margin-bottom: 14px; }
+.log-ts { font-family: var(--mono); font-size: 10px; color: var(--dim); flex-shrink: 0; padding-top: 2px; min-width: 44px; }
+.log-body { flex: 1; }
+.log-type { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); margin-bottom: 2px; }
+.log-sum { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+/* ── Story ────────────────────────────────────────── */
+.ch-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+#story-editor { width: 100%; min-height: 55vh; background: rgba(22,21,19,0.8); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); font-family: var(--serif); font-size: 15px; line-height: 1.85; padding: 16px; outline: none; resize: vertical; }
+#story-editor:focus { border-color: rgba(184,125,75,0.4); }
+
+/* ── Pack card ────────────────────────────────────── */
+.pack-card { background: rgba(22,21,19,0.80); border: 1px solid rgba(46,43,39,0.7); border-radius: var(--r); padding: 14px; margin-bottom: 10px; }
+.pack-name { font-family: var(--serif); font-size: 16px; color: var(--head); margin-bottom: 4px; }
+.pack-meta { font-size: 12px; color: var(--dim); margin-bottom: 10px; }
+.pack-tables { font-size: 12px; color: var(--text); line-height: 1.7; }
 
 /* ── Toast ────────────────────────────────────────── */
-#toast {
-  position: fixed;
-  bottom: calc(70px + var(--safe-bot));
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 10px 18px;
-  font-size: 13px;
-  color: var(--text);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s, transform 0.2s;
-  z-index: 100;
-  white-space: nowrap;
-}
-#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast { position: fixed; bottom: calc(64px + var(--safe-b)); left: 50%; transform: translateX(-50%) translateY(16px); background: rgba(22,21,19,0.95); border: 1px solid var(--border); border-radius: var(--r); padding: 10px 18px; font-size: 13px; color: var(--text); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 200; white-space: nowrap; }
+#toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ── Packs ────────────────────────────────────────── */
-.pack-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 14px;
-  margin-bottom: 10px;
-}
-.pack-name {
-  font-family: var(--font-serif);
-  font-size: 16px;
-  color: var(--text-head);
-  margin-bottom: 4px;
-}
-.pack-meta { font-size: 12px; color: var(--text-dim); }
+/* ── Credit box ───────────────────────────────────── */
+.credit { background: rgba(22,21,19,0.7); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--r); padding: 12px 14px; font-size: 12px; color: var(--dim); line-height: 1.7; margin-top: 10px; }
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
 
-/* ── About / Credits ─────────────────────────────── */
-.about-section { margin-bottom: 20px; }
-.about-section p { font-size: 13px; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
-.credit-box {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--r);
-  padding: 12px 14px;
-  font-size: 12px;
-  color: var(--text-dim);
-  line-height: 1.7;
-  margin-top: 8px;
-}
-
-/* ── Divider ──────────────────────────────────────── */
-.divider {
-  height: 1px;
-  background: var(--border);
-  margin: 20px 0;
-}
-
-/* ── Move trigger text ────────────────────────────── */
-.move-trigger {
-  display: none;
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 14px;
-  color: var(--text-dim);
-  padding: 10px 0 2px;
-  line-height: 1.6;
-}
-.move-trigger.visible { display: block; }
-
-.stat-select-row {
-  display: none;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 8px;
-}
-.stat-select-row.visible { display: flex; }
-.stat-chip {
-  padding: 6px 12px;
-  border-radius: var(--r);
-  border: 1px solid var(--border);
-  background: var(--bg3);
-  color: var(--text);
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
-.stat-chip.selected { border-color: var(--accent); color: var(--accent); background: rgba(184,125,75,0.1); }
-
-/* ── Responsive ───────────────────────────────────── */
 @media (min-width: 480px) {
-  .screen { padding: 24px 24px; }
-  #header { height: 180px; }
-  #app-title { font-size: 34px; }
+  .scr { padding: 22px 22px 28px; }
+  #title { font-size: 26px; }
 }
 </style>
 </head>
 <body>
-<div id="bg-layer"></div>
+<div id="bg"></div>
 <div id="app">
+
   <div id="header">
-    <div id="app-title">The Lone Table</div>
-    <div id="char-name-display"></div>
+    <span id="title">The Lone Table</span>
+    <span id="char-badge"></span>
   </div>
 
   <nav id="nav">
-    <button class="nav-btn active" data-screen="play" onclick="showScreen('play',this)">
-      <span class="icon">⚔️</span>Play
-    </button>
-    <button class="nav-btn" data-screen="character" onclick="showScreen('character',this)">
-      <span class="icon">🧭</span>Character
-    </button>
-    <button class="nav-btn" data-screen="vows" onclick="showScreen('vows',this)">
-      <span class="icon">📜</span>Vows
-    </button>
-    <button class="nav-btn" data-screen="log" onclick="showScreen('log',this)">
-      <span class="icon">📖</span>Log
-    </button>
-    <button class="nav-btn" data-screen="packs" onclick="showScreen('packs',this)">
-      <span class="icon">🗺️</span>Packs
-    </button>
-    <button class="nav-btn" data-screen="story" onclick="showScreen('story',this)">
-      <span class="icon">✍️</span>Story
-    </button>
-    <button class="nav-btn" data-screen="about" onclick="showScreen('about',this)">
-      <span class="icon">ℹ️</span>About
-    </button>
+    <button class="nb on" onclick="nav('play',this)"><span class="ic">⚔️</span>Play</button>
+    <button class="nb"    onclick="nav('char',this)"><span class="ic">🧭</span>Character</button>
+    <button class="nb"    onclick="nav('vows',this)"><span class="ic">📜</span>Vows</button>
+    <button class="nb"    onclick="nav('journal',this)"><span class="ic">📖</span>Journal</button>
+    <button class="nb"    onclick="nav('world',this)"><span class="ic">🗺️</span>World</button>
+    <button class="nb"    onclick="nav('about',this)"><span class="ic">ℹ️</span>About</button>
   </nav>
 
   <div id="screens">
 
-    <!-- ── PLAY ───────────────────────────────────────── -->
-    <div id="screen-play" class="screen active">
-      <h2>Make a Move</h2>
-      <div class="card">
-        <div class="field">
-          <label>Move</label>
-          <select id="move-select" onchange="onMoveChange()">
-            <option value="">— choose a move —</option>
-          </select>
-        </div>
-        <div id="move-trigger" class="move-trigger"></div>
-        <div id="stat-select-row" class="stat-select-row"></div>
-        <div style="margin-top:14px;">
-          <button class="btn btn-accent" onclick="rollMove()" style="width:100%">Roll the Dice</button>
+    <!-- ══ PLAY ═══════════════════════════════════════ -->
+    <div id="s-play" class="scr on">
+      <h2>Play</h2>
+      <p class="screen-desc">Choose a move, roll the dice, read what happens. Consult the oracle when you need the world to answer a question.</p>
+
+      <div class="howto">
+        <button class="howto-toggle" onclick="toggleHowto(this)">How to play <span>▾</span></button>
+        <div class="howto-body">
+          <ol>
+            <li><strong>Set up your character first</strong> — go to the Character tab and fill in your name and stats (Edge, Heart, Iron, Shadow, Wits — each 1–3).</li>
+            <li><strong>Swear a vow</strong> — go to the Vows tab and give yourself a goal. This is what drives the story.</li>
+            <li><strong>Back here to play</strong> — when your character faces something risky, choose the move that fits the moment from the dropdown below.</li>
+            <li><strong>Roll the dice</strong> — a d6 + your stat = your action score. Two d10s are the challenge dice. Beat both = strong hit. Beat one = weak hit. Beat neither = miss.</li>
+            <li><strong>Read the outcome</strong> — the move tells you exactly what happens on a hit or miss. Let that shape the next scene.</li>
+            <li><strong>Ask the oracle</strong> — when you're not sure what the world does, type a yes/no question and roll. Or pick a table for a random detail.</li>
+            <li><strong>Write the story</strong> — use the Journal tab to record what's happening in your own words.</li>
+          </ol>
         </div>
       </div>
 
-      <div id="roll-result">
-        <div class="result-box">
-          <div class="dice-row" id="dice-display"></div>
-          <div id="outcome-badges"></div>
-          <div id="momentum-hint" class="momentum-hint">
-            <span>🔥</span>
-            <span id="momentum-hint-text"></span>
-            <button class="btn btn-sm" style="margin-left:auto" onclick="burnMomentum()">Burn momentum</button>
-          </div>
-          <div id="outcome-text" class="outcome-text"></div>
+      <!-- Move -->
+      <div class="card">
+        <div class="card-title">Make a move</div>
+        <div class="field">
+          <label>Move</label>
+          <select id="move-sel" onchange="onMove()">
+            <option value="">— choose a move —</option>
+          </select>
         </div>
-        <button class="btn" style="width:100%;margin-top:10px" onclick="logLastRoll()">Add to log</button>
+        <div id="move-trigger" class="trigger-box"></div>
+        <div id="stat-row" class="stat-row"></div>
+        <div style="margin-top:14px">
+          <button id="roll-btn" class="btn btn-accent btn-full" onclick="startRoll()">Roll the Dice</button>
+        </div>
+      </div>
+
+      <!-- Dice + result -->
+      <div id="result-card" class="card" style="display:none">
+        <div class="card-title">Result</div>
+        <div class="dice-row" id="dice-row"></div>
+        <div class="outcome-area on" id="outcome-area">
+          <div class="badge-row" id="badges"></div>
+          <div class="momentum-tip" id="mom-tip">
+            <span>🔥</span>
+            <span id="mom-tip-text"></span>
+            <button class="btn btn-sm" style="margin-left:auto" onclick="burnMom()">Burn</button>
+          </div>
+          <div class="outcome-text" id="outcome-text"></div>
+        </div>
+        <button class="btn btn-sm" style="width:100%;margin-top:12px" onclick="logRoll()">Add to journal log</button>
       </div>
 
       <div class="divider"></div>
 
-      <h2>Ask the Oracle</h2>
+      <!-- Oracle -->
       <div class="card">
+        <div class="card-title">Ask the oracle</div>
+        <p style="font-size:12px;color:var(--dim);margin-bottom:12px">Type a question. The oracle answers. Use this whenever you're unsure what happens next — it keeps the story surprising even when you're playing alone.</p>
         <div class="field">
           <label>Your question</label>
-          <input type="text" id="oracle-q" placeholder="Is the path safe?">
+          <input type="text" id="oq" placeholder="Is the village still standing?">
         </div>
-        <div class="row" style="margin-bottom:14px">
+        <div class="row field">
           <div>
             <label>Mode</label>
-            <select id="oracle-mode" onchange="onOracleModeChange()">
-              <option value="yesno">Yes / No</option>
-              <option value="table">Table roll</option>
+            <select id="omode" onchange="oModeChange()">
+              <option value="yn">Yes / No</option>
+              <option value="tbl">Table roll</option>
             </select>
           </div>
-          <div id="oracle-yesno-col">
+          <div id="odds-col">
             <label>Odds</label>
-            <select id="oracle-odds">
+            <select id="odds">
               <option value="90">Almost Certain</option>
               <option value="75">Likely</option>
-              <option value="50" selected>50/50</option>
+              <option value="50" selected>50 / 50</option>
               <option value="25">Unlikely</option>
               <option value="10">Small Chance</option>
             </select>
           </div>
-          <div id="oracle-table-col" style="display:none">
+          <div id="tbl-col" style="display:none">
             <label>Table</label>
-            <select id="oracle-table-select"></select>
+            <select id="tbl-sel"></select>
           </div>
         </div>
-        <button class="btn btn-accent" onclick="rollOracle()" style="width:100%">Consult Oracle</button>
-        <div id="oracle-result-box">
-          <div class="oracle-result">
-            <div class="oracle-q" id="oracle-q-display"></div>
-            <div class="oracle-ans" id="oracle-ans-display"></div>
-            <div class="oracle-roll" id="oracle-roll-display"></div>
-          </div>
-          <button class="btn" style="width:100%;margin-top:8px" onclick="logLastOracle()">Add to log</button>
+        <button class="btn btn-accent btn-full" onclick="rollOracle()">Consult Oracle</button>
+        <div class="oracle-result card" id="oracle-out" style="background:rgba(14,13,12,0.6);margin-top:12px;margin-bottom:0">
+          <div class="oracle-q" id="oq-display"></div>
+          <div class="oracle-ans" id="oa-display"></div>
+          <div class="oracle-sub" id="osub-display"></div>
+          <button class="btn btn-sm" style="margin-top:10px;width:100%" onclick="logOracle()">Add to journal log</button>
         </div>
       </div>
     </div>
 
-    <!-- ── CHARACTER ──────────────────────────────────── -->
-    <div id="screen-character" class="screen">
+    <!-- ══ CHARACTER ════════════════════════════════════ -->
+    <div id="s-char" class="scr">
       <h2>Character</h2>
+      <p class="screen-desc">Your stats shape every roll. Momentum builds as you succeed and can be burned to upgrade a bad result. Start here before your first session.</p>
+
       <div class="card">
+        <div class="card-title">Identity</div>
         <div class="field">
           <label>Name</label>
-          <input type="text" id="char-name" placeholder="Your wanderer's name" oninput="saveChar()">
-        </div>
-        <div class="field">
-          <label>Stats <span style="font-size:10px;color:var(--text-dim)">(each 1–3)</span></label>
-          <div class="stat-grid" id="stat-grid"></div>
+          <input type="text" id="cname" placeholder="Your wanderer's name" oninput="saveChar()">
         </div>
       </div>
 
       <div class="card">
-        <h3>Condition Tracks</h3>
+        <div class="card-title">Stats <span style="font-weight:normal;text-transform:none;letter-spacing:0;color:var(--dim);font-size:10px">(1–3 each)</span></div>
+        <p style="font-size:12px;color:var(--dim);margin-bottom:10px">Edge = speed & evasion · Heart = resolve & persuasion · Iron = strength & combat · Shadow = stealth & deception · Wits = perception & survival</p>
+        <div class="stat-grid" id="stat-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Condition tracks</div>
+        <p style="font-size:12px;color:var(--dim);margin-bottom:12px">Tap a pip to set the value. These go down when you suffer harm or stress. If Health or Spirit hits 0, trigger the appropriate Suffer move.</p>
         <div class="field">
-          <label>Health <span id="health-val" style="color:var(--accent);font-family:var(--font-mono)"></span></label>
-          <div class="track" id="health-track"></div>
+          <label>Health <span id="hv" style="color:var(--accent);font-family:var(--mono)"></span></label>
+          <div class="track" id="ht"></div>
         </div>
         <div class="field">
-          <label>Spirit <span id="spirit-val" style="color:var(--accent2);font-family:var(--font-mono)"></span></label>
-          <div class="track" id="spirit-track"></div>
+          <label>Spirit <span id="sv" style="color:var(--green);font-family:var(--mono)"></span></label>
+          <div class="track" id="st"></div>
         </div>
         <div class="field">
-          <label>Supply <span id="supply-val" style="color:var(--accent);font-family:var(--font-mono)"></span></label>
-          <div class="track" id="supply-track"></div>
+          <label>Supply <span id="suv" style="color:var(--accent);font-family:var(--mono)"></span></label>
+          <div class="track" id="sut"></div>
         </div>
       </div>
 
       <div class="card">
-        <h3>Momentum</h3>
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:10px">Range −6 to +10. Burn to upgrade a miss → weak hit or weak → strong hit.</p>
-        <div class="momentum-track">
-          <div class="momentum-controls">
-            <button class="btn btn-sm" onclick="adjustMomentum(-1)">−</button>
-            <div class="momentum-num" id="momentum-display">0</div>
-            <button class="btn btn-sm" onclick="adjustMomentum(1)">+</button>
-          </div>
-          <button class="btn btn-sm btn-danger" onclick="resetMomentum()" style="margin-left:auto">Reset</button>
+        <div class="card-title">Momentum</div>
+        <p style="font-size:12px;color:var(--dim);margin-bottom:10px">Starts at 2. Rises when you get strong hits, falls when you suffer. Range −6 to +10. When momentum is positive and higher than a challenge die, you can burn it to upgrade your outcome — tap Burn in the result screen.</p>
+        <div class="mom-row">
+          <button class="btn btn-sm" onclick="adjMom(-1)">−</button>
+          <div class="mom-num" id="mom-display">2</div>
+          <button class="btn btn-sm" onclick="adjMom(1)">+</button>
+          <button class="btn btn-sm" style="margin-left:auto" onclick="resetMom()">Reset to 2</button>
         </div>
       </div>
 
       <div class="card">
-        <h3>Assets</h3>
-        <div id="assets-display" style="margin-bottom:10px"></div>
+        <div class="card-title">Assets</div>
+        <p style="font-size:12px;color:var(--dim);margin-bottom:10px">Special abilities, companions, or gear that give you advantages. Tap to remove.</p>
+        <div class="tags" id="assets-list"></div>
         <div class="row">
-          <input type="text" id="asset-input" placeholder="e.g. Companion: Wolf">
+          <input type="text" id="asset-inp" placeholder="e.g. Companion: Wolf">
           <button class="btn" onclick="addAsset()">Add</button>
         </div>
       </div>
 
       <div class="card">
-        <h3>Bonds</h3>
-        <div id="bonds-display" style="margin-bottom:10px"></div>
+        <div class="card-title">Bonds</div>
+        <p style="font-size:12px;color:var(--dim);margin-bottom:10px">People and communities you have a sworn connection to. Bonds let you add +1d6 when you make certain relationship moves. Tap to remove.</p>
+        <div class="tags" id="bonds-list"></div>
         <div class="row">
-          <input type="text" id="bond-input" placeholder="e.g. Mira of the Thornwood">
+          <input type="text" id="bond-inp" placeholder="e.g. Mira of Thornwood">
           <button class="btn" onclick="addBond()">Add</button>
         </div>
       </div>
     </div>
 
-    <!-- ── VOWS ───────────────────────────────────────── -->
-    <div id="screen-vows" class="screen">
+    <!-- ══ VOWS ══════════════════════════════════════════ -->
+    <div id="s-vows" class="scr">
       <h2>Vows</h2>
+      <p class="screen-desc">A vow is a sworn oath that drives your journey. Every vow has a rank — the harder the vow, the more progress boxes it has and the more work it takes to fill them. Fulfil a vow by rolling your progress track against two challenge dice.</p>
+
       <div class="card">
-        <h3>Swear a New Vow</h3>
+        <div class="card-title">Swear a new vow</div>
         <div class="field">
-          <label>Vow</label>
-          <input type="text" id="vow-text" placeholder="I will avenge the village of Thornmere">
+          <label>The oath</label>
+          <input type="text" id="vow-inp" placeholder="I will find the one who burned Thornwood">
         </div>
         <div class="field">
           <label>Rank</label>
           <select id="vow-rank">
-            <option value="troublesome">Troublesome (12 boxes)</option>
-            <option value="dangerous">Dangerous (8 boxes)</option>
-            <option value="formidable" selected>Formidable (8 boxes)</option>
-            <option value="extreme">Extreme (8 boxes)</option>
-            <option value="epic">Epic (8 boxes)</option>
+            <option value="troublesome">Troublesome — 12 boxes, +3 ticks per milestone (easiest)</option>
+            <option value="dangerous">Dangerous — 8 boxes, +2 ticks per milestone</option>
+            <option value="formidable" selected>Formidable — 8 boxes, +2 ticks (default for most stories)</option>
+            <option value="extreme">Extreme — 8 boxes, +2 ticks (major campaign arcs)</option>
+            <option value="epic">Epic — 8 boxes, +1 tick per milestone (hardest)</option>
           </select>
         </div>
-        <button class="btn btn-accent" onclick="swearVow()" style="width:100%">Swear the Vow</button>
+        <button class="btn btn-accent btn-full" onclick="swearVow()">Swear the Vow</button>
       </div>
+
       <div id="vows-list"></div>
     </div>
 
-    <!-- ── LOG ────────────────────────────────────────── -->
-    <div id="screen-log" class="screen">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <h2 style="margin-bottom:0">Session Log</h2>
-        <button class="btn btn-sm" onclick="addNote()">+ Note</button>
+    <!-- ══ JOURNAL ════════════════════════════════════════ -->
+    <div id="s-journal" class="scr">
+      <h2>Journal</h2>
+      <p class="screen-desc">Your story in two layers — the mechanical log of moves and oracle results, and your own prose narrative.</p>
+
+      <div class="jtabs">
+        <button class="jtab on" onclick="jTab('story',this)">Story</button>
+        <button class="jtab" onclick="jTab('log',this)">Session Log</button>
       </div>
-      <div id="log-note-form" style="display:none;margin-bottom:14px">
-        <div class="card">
-          <textarea id="note-text" placeholder="Write a note about what's happening…"></textarea>
-          <div class="row" style="margin-top:8px">
-            <button class="btn btn-accent" onclick="saveNote()">Save</button>
-            <button class="btn" onclick="cancelNote()">Cancel</button>
+
+      <!-- Story panel -->
+      <div class="jpanel on" id="jp-story">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:12px;color:var(--dim)">Write what happens in your own words. Autosaves as you type.</span>
+          <button class="btn btn-sm" onclick="newChapter()">+ Chapter</button>
+        </div>
+        <div class="ch-tabs" id="ch-tabs"></div>
+        <textarea id="story-ed" placeholder="The fire burns low at the lone table. Your journey begins…&#10;&#10;Write what happens here." oninput="onStory()"></textarea>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;align-items:center">
+          <span id="wc" style="font-size:11px;color:var(--dim)"></span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span id="saved-ind" style="font-size:11px;color:var(--dim);opacity:0;transition:opacity .4s">Saved</span>
+            <button class="btn btn-sm btn-danger" onclick="delChapter()">Delete chapter</button>
           </div>
         </div>
       </div>
-      <div id="log-list"></div>
-      <p id="log-empty" style="color:var(--text-dim);font-size:13px;text-align:center;padding:40px 0">
-        No entries yet. Make moves and consult the oracle to fill the log.
-      </p>
+
+      <!-- Log panel -->
+      <div class="jpanel" id="jp-log">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+          <button class="btn btn-sm" onclick="addNote()">+ Note</button>
+        </div>
+        <div id="note-form" style="display:none;margin-bottom:12px">
+          <div class="card">
+            <textarea id="note-text" placeholder="Write a note about the scene…"></textarea>
+            <div class="row" style="margin-top:8px">
+              <button class="btn btn-accent" onclick="saveNote()">Save</button>
+              <button class="btn" onclick="cancelNote()">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <div id="log-list"></div>
+        <p id="log-empty" style="color:var(--dim);font-size:13px;text-align:center;padding:40px 0">No entries yet. Make moves and consult the oracle — they log here automatically.</p>
+      </div>
     </div>
 
-    <!-- ── PACKS ──────────────────────────────────────── -->
-    <div id="screen-packs" class="screen">
-      <h2>Setting Packs</h2>
-      <div id="packs-list"></div>
-      <div class="card" style="margin-top:8px">
-        <h3>Import a Pack</h3>
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:12px">Load a .json setting pack file to add new oracle tables, scenario seeds, and location prompts.</p>
+    <!-- ══ WORLD ══════════════════════════════════════════ -->
+    <div id="s-world" class="scr">
+      <h2>World</h2>
+      <p class="screen-desc">Setting packs add new oracle tables, location prompts, NPC flavour, and ready-to-play scenario seeds to your game. Each pack is a self-contained JSON file — import one below to unlock its content in the oracle.</p>
+
+      <div class="card" style="border-left:3px solid var(--accent)">
+        <div class="card-title">What's in a pack?</div>
+        <p style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:8px">
+          Every setting pack contains the same building blocks, flavoured for its setting:
+        </p>
+        <ul style="font-size:13px;color:var(--text);line-height:1.8;padding-left:18px">
+          <li><strong style="color:var(--head)">Location prompts</strong> — named, evocative places to discover</li>
+          <li><strong style="color:var(--head)">NPC tables</strong> — who lives here, their role and one defining trait</li>
+          <li><strong style="color:var(--head)">Complication table</strong> — things that go wrong in ways specific to this world</li>
+          <li><strong style="color:var(--head)">Scenario seeds</strong> — a vow already in motion with a hook and first scene</li>
+          <li><strong style="color:var(--head)">Custom oracles</strong> — tables unique to the setting (weather, tide, rumour, etc.)</li>
+        </ul>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+          <div>
+            <div class="pack-name">The Drowned Coast</div>
+            <div class="pack-meta">Coming soon — maritime horror &amp; coastal wilderness</div>
+            <div class="pack-tables">
+              12 coastal locations · Tide &amp; Weather oracle · Coastal Encounter table<br>
+              10 NPC entries · 8 complications · 6 scenario seeds
+            </div>
+          </div>
+          <span style="font-size:11px;color:var(--dim);border:1px solid var(--border);padding:2px 8px;border-radius:3px;white-space:nowrap">In dev</span>
+        </div>
+      </div>
+
+      <div id="installed-packs"></div>
+
+      <div class="card">
+        <div class="card-title">Import a pack</div>
+        <p style="font-size:12px;color:var(--dim);margin-bottom:12px">Load a .json setting pack file. Its oracle tables will appear in the oracle selector on the Play screen.</p>
         <label class="btn" style="cursor:pointer;display:inline-block">
-          Choose File
-          <input type="file" accept=".json" id="pack-import" onchange="importPack(event)" style="display:none">
+          Choose .json file
+          <input type="file" accept=".json" id="pack-file" onchange="importPack(event)" style="display:none">
         </label>
       </div>
     </div>
 
-    <!-- ── STORY ──────────────────────────────────────── -->
-    <div id="screen-story" class="screen">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <h2 style="margin-bottom:0">Story Journal</h2>
-        <div style="display:flex;gap:6px;align-items:center">
-          <span id="story-saved-indicator" style="font-size:11px;color:var(--text-dim);opacity:0;transition:opacity 0.4s">Saved</span>
-          <button class="btn btn-sm" onclick="newStoryChapter()">+ Chapter</button>
-        </div>
-      </div>
-      <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Write the narrative as it unfolds. Autosaves as you type.</p>
-
-      <div id="chapter-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px"></div>
-
-      <div id="story-editor-wrap">
-        <textarea id="story-editor"
-          placeholder="The fire burns low at the lone table. Your journey begins…&#10;&#10;Write what happens here. Let the dice guide the shape of it."
-          oninput="onStoryInput()"
-          style="width:100%;min-height:60vh;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--font-serif);font-size:15px;line-height:1.8;padding:16px;outline:none;resize:vertical;"></textarea>
-      </div>
-
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-        <span id="story-word-count" style="font-size:11px;color:var(--text-dim)"></span>
-        <button class="btn btn-sm btn-danger" onclick="deleteCurrentChapter()">Delete chapter</button>
-      </div>
-    </div>
-
-    <!-- ── ABOUT ──────────────────────────────────────── -->
-    <div id="screen-about" class="screen">
+    <!-- ══ ABOUT ══════════════════════════════════════════ -->
+    <div id="s-about" class="scr">
       <h2>About</h2>
-      <div class="about-section">
-        <p><em style="font-family:var(--font-serif)">The Lone Table</em> is a digital companion for solo tabletop RPG play. No GM required — the oracles, moves, and dice do the storytelling.</p>
-        <p>The app runs entirely offline. All your character data and session logs are stored locally on your device.</p>
-      </div>
-      <div class="about-section">
-        <h3>Credits &amp; License</h3>
-        <div class="credit-box">
-          <strong style="color:var(--text)">Ironsworn System Reference Document</strong><br>
-          The core mechanics, moves, and oracle tables in this app are derived from the <em>Ironsworn SRD</em> by Shawn Tomkin / Tomkin Press, licensed under Creative Commons Attribution 4.0 International (CC BY 4.0).<br><br>
+      <p class="screen-desc">The Lone Table is a solo tabletop RPG companion. No GM, no group, no table needed — just you, the dice, and the oracle.</p>
+
+      <div class="card">
+        <div class="card-title">Credits &amp; Licence</div>
+        <div class="credit">
+          <strong style="color:var(--head)">Ironsworn System Reference Document</strong><br>
+          Core mechanics, moves, and oracle tables are derived from the <em>Ironsworn SRD</em> by Shawn Tomkin / Tomkin Press, licensed under Creative Commons Attribution 4.0 International.<br><br>
           This is not an official Ironsworn or Tomkin Press product. All visual design is original Signal9 Studio work.<br><br>
           <a href="https://www.ironswornrpg.com" target="_blank" rel="noopener" style="color:var(--accent)">ironswornrpg.com</a>
         </div>
       </div>
+
       <div class="divider"></div>
-      <div class="about-section">
-        <h3>Data</h3>
+
+      <div class="card">
+        <div class="card-title">Data</div>
+        <p style="font-size:12px;color:var(--dim);margin-bottom:12px">All data is stored locally on this device. Clearing removes your character, vows, journal, and log permanently.</p>
         <button class="btn btn-danger" onclick="confirmClear()">Clear all data</button>
       </div>
     </div>
 
   </div><!-- /screens -->
 </div><!-- /app -->
-
 <div id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════
-// DATA — Ironsworn SRD Moves (CC BY 4.0 Shawn Tomkin)
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// MOVES — Ironsworn SRD (CC BY 4.0 Shawn Tomkin)
+// ═══════════════════════════════════════════════════
 const MOVES = [
-  // ── Adventure ──────────────────────────────────
-  {
-    name: 'Face Danger',
-    category: 'adventure',
-    trigger: 'When you attempt something risky or react to an imminent threat…',
-    stats: ['edge','heart','iron','shadow','wits'],
-    strongHit: 'You are successful. Take +1 momentum.',
-    weakHit: 'You succeed, but face a troublesome cost. Choose one: You are delayed, lose advantage, or face a new danger.',
-    miss: 'You fail, or your progress is undermined by a dramatic complication. Pay the Price.'
-  },
-  {
-    name: 'Secure an Advantage',
-    category: 'adventure',
-    trigger: 'When you assess a situation, make preparations, or attempt to gain leverage…',
-    stats: ['edge','heart','iron','shadow','wits'],
-    strongHit: 'You gain advantage. Choose one: Take +2 momentum; or take +1 momentum and make another move with +1 add.',
-    weakHit: 'Choose one: Take +1 momentum; or take +1 momentum and make another move with +1 add, but first suffer a minor setback.',
-    miss: 'You fail to gain advantage and face a troublesome cost. Pay the Price.'
-  },
-  {
-    name: 'Gather Information',
-    category: 'adventure',
-    trigger: 'When you search an area, ask questions, conduct research, or follow a trail…',
-    stats: ['wits'],
-    strongHit: 'You discover something helpful and specific. Take +2 momentum.',
-    weakHit: 'The information is incomplete or comes with a cost. Take +1 momentum.',
-    miss: 'Your investigation reveals a dire threat or complication. Pay the Price.'
-  },
-  {
-    name: 'Heal',
-    category: 'adventure',
-    trigger: 'When you treat wounds or ailments or support the recovery of an ally…',
-    stats: ['wits'],
-    strongHit: 'Restore +2 health for yourself or the ally. If you are the one being treated and the healer is not you, they take +1 momentum.',
-    weakHit: 'Restore +1 health for yourself or the ally.',
-    miss: 'The recovery does not take hold. Pay the Price.'
-  },
-  {
-    name: 'Resupply',
-    category: 'adventure',
-    trigger: 'When you hunt, forage, or scavenge to bolster your supply…',
-    stats: ['wits'],
-    strongHit: 'Take +2 supply.',
-    weakHit: 'Take +1 supply.',
-    miss: 'You find nothing useful, or your attempts reveal a new danger. Pay the Price.'
-  },
-  {
-    name: 'Make Camp',
-    category: 'adventure',
-    trigger: 'When you rest and recover for several hours in the wild…',
-    stats: ['supply'],
-    strongHit: 'Spend 1 supply. You and any allies may choose two: Heal 2 health; Suffer 2 less stress (restore 2 spirit); Strengthen your resolve (take +1 momentum); Prepare for the fight ahead (take +1 momentum on your next combat move).',
-    weakHit: 'Spend 1 supply. You and any allies may choose one of the above options.',
-    miss: 'Rest proves elusive. Pay the Price.'
-  },
-  {
-    name: 'Undertake a Journey',
-    category: 'adventure',
-    trigger: 'When you travel across hazardous or unfamiliar lands…',
-    stats: ['wits'],
-    strongHit: 'Mark progress. You may make another move with this roll if you choose.',
-    weakHit: 'Mark progress but suffer a minor cost: Lose 1 supply; suffer 1 harm; or face a new challenge.',
-    miss: 'You are waylaid by a perilous event. Pay the Price.'
-  },
-  {
-    name: 'Reach Your Destination',
-    category: 'adventure',
-    trigger: 'When your journey comes to an end…',
-    stats: [],
-    isProgress: true,
-    strongHit: 'The situation at your destination is what you expected, or better. Choose one: Make another move with +1 add; or take +1 momentum.',
-    weakHit: 'But the situation is more complicated or dangerous than anticipated. Envision what you find.',
-    miss: 'You arrive but face a dire threat. Pay the Price.'
-  },
-  // ── Relationship ───────────────────────────────
-  {
-    name: 'Compel',
-    category: 'relationship',
-    trigger: 'When you attempt to persuade, barter, or threaten…',
-    stats: ['heart','iron','shadow'],
-    strongHit: 'They do what you ask, or agree to your terms.',
-    weakHit: 'They comply, but with a condition or complication.',
-    miss: 'They refuse, and the situation worsens. Pay the Price.'
-  },
-  {
-    name: 'Sojourn',
-    category: 'relationship',
-    trigger: 'When you spend time in a community seeking rest, recuperation, or aid…',
-    stats: ['heart'],
-    strongHit: 'Choose two: Mend your health (restore up to +5 health); Refresh your spirit (restore up to +5 spirit); Bolster your supply (restore up to +5 supply); Gain a tip or insight (take +1 momentum).',
-    weakHit: 'Choose one of the above.',
-    miss: 'You find no comfort here, or trouble finds you. Pay the Price.'
-  },
-  {
-    name: 'Forge a Bond',
-    category: 'relationship',
-    trigger: 'When you spend significant time with a person or community, working to create a bond…',
-    stats: ['heart'],
-    strongHit: 'You forge a bond. Mark a bond and take +1 spirit.',
-    weakHit: 'You create a bond, but it comes with a complication or incomplete understanding.',
-    miss: 'You do not forge the bond and the relationship is strained. Pay the Price.'
-  },
-  {
-    name: 'Aid Your Ally',
-    category: 'relationship',
-    trigger: 'When you support your ally as they make a move…',
-    stats: ['any'],
-    strongHit: 'Your ally takes +2 on their move.',
-    weakHit: 'Your ally takes +1 on their move, but you also suffer a minor cost.',
-    miss: 'You fail to aid your ally and face a troublesome cost. Pay the Price.'
-  },
-  // ── Combat ─────────────────────────────────────
-  {
-    name: 'Enter the Fray',
-    category: 'combat',
-    trigger: 'When you initiate combat or are forced into a fight…',
-    stats: ['heart','edge','wits'],
-    strongHit: 'Take +2 momentum. You are positioned well — make an immediate move.',
-    weakHit: 'Take +1 momentum.',
-    miss: 'Things look bad. Pay the Price.'
-  },
-  {
-    name: 'Strike',
-    category: 'combat',
-    trigger: 'When you have initiative and attack in close quarters…',
-    stats: ['iron'],
-    strongHit: 'You strike true. Mark progress twice and take +1 momentum.',
-    weakHit: 'You strike but are countered. Mark progress and suffer 1 harm.',
-    miss: 'Your attack fails or leaves you open. Pay the Price.'
-  },
-  {
-    name: 'Clash',
-    category: 'combat',
-    trigger: 'When you do not have initiative and fight back against an attack…',
-    stats: ['iron','edge'],
-    strongHit: 'You trade blows. Mark progress. You gain initiative.',
-    weakHit: 'You trade blows. Mark progress but suffer 1 harm.',
-    miss: 'You are overwhelmed. Suffer harm and lose ground. Pay the Price.'
-  },
-  {
-    name: 'End the Fight',
-    category: 'combat',
-    trigger: 'When you make a progress roll to end a fight…',
-    stats: [],
-    isProgress: true,
-    strongHit: 'Your foe is defeated. Take +1 momentum.',
-    weakHit: 'Your foe is badly wounded but not done yet. Choose: Suffer 3 stress; or make one more move to finish it.',
-    miss: 'The fight continues. You must face a dire complication. Pay the Price.'
-  },
-  {
-    name: 'Battle',
-    category: 'combat',
-    trigger: "When you fight a battle and it's better left to the imagination…",
-    stats: ['edge','heart','iron','shadow','wits'],
-    strongHit: 'You achieve your goal. Take +2 momentum.',
-    weakHit: 'You achieve your goal but at great cost. Pay the Price.',
-    miss: 'You are defeated. Pay the Price.'
-  },
-  // ── Suffer ─────────────────────────────────────
-  {
-    name: 'Endure Harm',
-    category: 'suffer',
-    trigger: 'When you face physical damage…',
-    stats: ['iron','heart'],
-    strongHit: 'Choose one: Shake it off — if health is greater than 0, suffer 1 less harm; or Embrace the pain — take +1 momentum.',
-    weakHit: 'Press on.',
-    miss: 'You are dead or suffering a debilitating wound. Pay the Price.'
-  },
-  {
-    name: 'Endure Stress',
-    category: 'suffer',
-    trigger: 'When you face mental anguish, hardship, or despair…',
-    stats: ['heart','iron'],
-    strongHit: 'Choose one: Shake it off — if spirit is greater than 0, suffer 1 less stress; or Find your footing — take +1 momentum.',
-    weakHit: 'Press on.',
-    miss: 'You are broken. Pay the Price.'
-  },
-  // ── Quest ──────────────────────────────────────
-  {
-    name: 'Reach a Milestone',
-    category: 'quest',
-    trigger: 'When you complete a significant task toward a vow…',
-    stats: [],
-    isSpecial: true,
-    strongHit: 'Mark progress on the vow per its rank: Troublesome=3, Dangerous=2, Formidable=2, Extreme=2, Epic=1.',
-    weakHit: 'Mark progress on the vow per its rank.',
-    miss: '—'
-  },
-  // ── Fate ───────────────────────────────────────
-  {
-    name: 'Pay the Price',
-    category: 'fate',
-    trigger: 'When you suffer the consequence of a miss…',
-    stats: [],
-    isSpecial: true,
-    strongHit: 'The most obvious negative outcome happens.',
-    weakHit: 'It\'s worse than expected.',
-    miss: 'Roll on the Pay the Price table or choose from: a person or community loses faith in you; a person or place you care about is harmed; you face a new or escalated threat; you lose resources, supply, or opportunity.'
-  }
+  { name:'Face Danger',        cat:'adventure',   stats:['edge','heart','iron','shadow','wits'],
+    trigger:'When you attempt something risky or react to an imminent threat…',
+    strong:'You are successful. Take +1 momentum.',
+    weak:'You succeed, but face a troublesome cost. Choose one: you are delayed, lose advantage, or face a new danger.',
+    miss:'You fail, or your progress is undermined by a dramatic complication. Pay the Price.' },
+
+  { name:'Secure an Advantage', cat:'adventure',  stats:['edge','heart','iron','shadow','wits'],
+    trigger:'When you assess a situation, make preparations, or attempt to gain leverage…',
+    strong:'You gain advantage. Choose one: take +2 momentum; or take +1 momentum and make another move with +1 add.',
+    weak:'Choose one: take +1 momentum; or take +1 momentum and make another move with +1 add — but first suffer a minor setback.',
+    miss:'You fail to gain advantage and face a troublesome cost. Pay the Price.' },
+
+  { name:'Gather Information',  cat:'adventure',  stats:['wits'],
+    trigger:'When you search an area, ask questions, conduct research, or follow a trail…',
+    strong:'You discover something helpful and specific. Take +2 momentum.',
+    weak:'The information is incomplete or comes with a cost. Take +1 momentum.',
+    miss:'Your investigation reveals a dire threat or complication. Pay the Price.' },
+
+  { name:'Heal',               cat:'adventure',   stats:['wits'],
+    trigger:'When you treat wounds or ailments or support the recovery of an ally…',
+    strong:'Restore +2 health for yourself or the ally.',
+    weak:'Restore +1 health for yourself or the ally.',
+    miss:'The recovery does not take hold. Pay the Price.' },
+
+  { name:'Resupply',           cat:'adventure',   stats:['wits'],
+    trigger:'When you hunt, forage, or scavenge to bolster your supply…',
+    strong:'Take +2 supply.',
+    weak:'Take +1 supply.',
+    miss:'You find nothing useful, or your attempts reveal a new danger. Pay the Price.' },
+
+  { name:'Make Camp',          cat:'adventure',   stats:['supply'],
+    trigger:'When you rest and recover for several hours in the wild…',
+    strong:'Spend 1 supply. Choose two: restore 2 health; restore 2 spirit; take +1 momentum; take +1 add on your next combat move.',
+    weak:'Spend 1 supply. Choose one of the above.',
+    miss:'Rest proves elusive. Pay the Price.' },
+
+  { name:'Undertake a Journey', cat:'adventure',  stats:['wits'],
+    trigger:'When you travel across hazardous or unfamiliar lands…',
+    strong:'Mark progress on your journey. You may make another move with this roll.',
+    weak:'Mark progress but suffer a minor cost: lose 1 supply; suffer 1 harm; or face a new challenge.',
+    miss:'You are waylaid by a perilous event. Pay the Price.' },
+
+  { name:'Reach Your Destination', cat:'adventure', stats:[], isProgress:true,
+    trigger:'When your journey comes to an end…',
+    strong:'The situation at your destination is what you expected, or better. Take +1 momentum.',
+    weak:'But the situation is more complicated or dangerous than anticipated. Envision what you find.',
+    miss:'You arrive but face a dire threat or the destination is not what you sought. Pay the Price.' },
+
+  { name:'Compel',             cat:'relationship', stats:['heart','iron','shadow'],
+    trigger:'When you attempt to persuade, barter, or threaten to get what you need…',
+    strong:'They do what you ask, or agree to your terms.',
+    weak:'They comply, but with a condition or complication you must deal with.',
+    miss:'They refuse, and the situation worsens. Pay the Price.' },
+
+  { name:'Sojourn',            cat:'relationship', stats:['heart'],
+    trigger:'When you spend time in a community seeking rest, recuperation, or aid…',
+    strong:'Choose two: restore up to +5 health; restore up to +5 spirit; restore up to +5 supply; take +1 momentum.',
+    weak:'Choose one of the above.',
+    miss:'You find no comfort here, or trouble finds you. Pay the Price.' },
+
+  { name:'Forge a Bond',       cat:'relationship', stats:['heart'],
+    trigger:'When you spend significant time with a person or community and work to create a bond…',
+    strong:'You forge a bond. Mark a bond and take +1 spirit.',
+    weak:'You create a bond, but it comes with a complication or incomplete understanding.',
+    miss:'You do not forge the bond and the relationship is strained. Pay the Price.' },
+
+  { name:'Aid Your Ally',      cat:'relationship', stats:['edge','heart','iron','shadow','wits'],
+    trigger:'When you support your ally as they make a move, roll to help them…',
+    strong:'Your ally takes +2 on their move.',
+    weak:'Your ally takes +1 on their move, but you also suffer a minor cost.',
+    miss:'You fail to aid your ally and face a troublesome cost. Pay the Price.' },
+
+  { name:'Enter the Fray',     cat:'combat',       stats:['heart','edge','wits'],
+    trigger:'When you initiate combat or are forced into a fight…',
+    strong:'Take +2 momentum. You have the advantage — make an immediate move.',
+    weak:'Take +1 momentum.',
+    miss:'Things look bad. Pay the Price.' },
+
+  { name:'Strike',             cat:'combat',       stats:['iron'],
+    trigger:'When you have initiative and attack in close quarters or at range…',
+    strong:'You strike true. Mark progress twice and take +1 momentum.',
+    weak:'You strike but are countered. Mark progress and suffer 1 harm.',
+    miss:'Your attack fails or leaves you dangerously exposed. Pay the Price.' },
+
+  { name:'Clash',              cat:'combat',       stats:['iron','edge'],
+    trigger:'When you do not have initiative and fight back against an attack…',
+    strong:'You trade blows and gain ground. Mark progress and take initiative.',
+    weak:'You trade blows. Mark progress but suffer 1 harm.',
+    miss:'You are overwhelmed. Suffer harm and lose ground. Pay the Price.' },
+
+  { name:'Battle',             cat:'combat',       stats:['edge','heart','iron','shadow','wits'],
+    trigger:"When you fight a battle and it's better left to the imagination…",
+    strong:'You achieve your goal. Take +2 momentum.',
+    weak:'You achieve your goal but at significant cost. Pay the Price.',
+    miss:'You are defeated or forced to retreat. Pay the Price.' },
+
+  { name:'End the Fight',      cat:'combat',       stats:[], isProgress:true,
+    trigger:'When you make a progress roll to end a fight…',
+    strong:'Your foe is defeated. Take +1 momentum.',
+    weak:'Your foe is badly wounded but not finished. Choose: suffer 3 stress; or make one final move to end it.',
+    miss:'The fight continues and a dire complication unfolds. Pay the Price.' },
+
+  { name:'Endure Harm',        cat:'suffer',       stats:['iron','heart'],
+    trigger:'When you face physical damage…',
+    strong:'Choose one: shake it off (if health > 0, suffer 1 less harm); or embrace the pain (take +1 momentum).',
+    weak:'Press on.',
+    miss:'You are dead, dying, or suffer a debilitating wound. Pay the Price.' },
+
+  { name:'Endure Stress',      cat:'suffer',       stats:['heart','iron'],
+    trigger:'When you face mental anguish, hardship, or despair…',
+    strong:"Choose one: shake it off (if spirit > 0, suffer 1 less stress); or find your footing (take +1 momentum).",
+    weak:'Press on.',
+    miss:'You are broken or face a moment of total despair. Pay the Price.' },
+
+  { name:'Out of Supply',      cat:'suffer',       stats:[],  isSpecial:true,
+    trigger:'When your supply is exhausted (reaches 0)…',
+    strong:'Suffer -1 health for yourself and each companion.',
+    weak:'Suffer -1 health for yourself and each companion.',
+    miss:'Suffer -1 health for yourself and each companion.' },
+
+  { name:'Reach a Milestone',  cat:'quest',        stats:[], isSpecial:true,
+    trigger:'When you accomplish a significant event toward a vow, mark progress on that vow…',
+    strong:'Troublesome: +3 ticks · Dangerous or Formidable: +2 ticks · Extreme: +2 ticks · Epic: +1 tick',
+    weak:'(Same as above)',
+    miss:'—' },
+
+  { name:'Pay the Price',      cat:'fate',         stats:[], isSpecial:true,
+    trigger:'When you suffer the consequence of a miss or pay a cost…',
+    strong:'Choose the most obvious negative outcome.',
+    weak:"It's worse than you expected.",
+    miss:'Roll on the Pay the Price table, or choose: lose faith from someone you rely on; a person or place is harmed; face a new escalating threat; lose resources.' },
 ];
 
-// ── Oracle Tables (SRD) ────────────────────────────
+// ═══════════════════════════════════════════════════
+// ORACLE TABLES
+// ═══════════════════════════════════════════════════
 const CORE_ORACLES = [
-  {
-    id: 'action', name: 'Action',
-    entries: ['Abandon','Acquire','Advance','Arrive','Avenge','Avoid','Await','Begin','Breach','Build','Burn','Capture','Challenge','Change','Clash','Command','Construct','Control','Create','Damage','Decay','Defeat','Defend','Delay','Deliver','Demand','Destroy','Distract','Eliminate','Endure','Escalate','Explore','Fight','Find','Follow','Fortify','Gather','Guard','Guide','Harm','Hide','Hold','Hunt','Initiate','Invade','Investigate','Lead','Leave','Liberate','Locate','Lose','Manipulate','Mourn','Move','Negotiate','Oppose','Overwhelm','Patrol','Pay','Protect','Pursue','Raid','Reach','Reject','Release','Resist','Restore','Reveal','Risk','Rob','Search','Seize','Summon','Support','Suppress','Surrender','Survey','Survive','Take','Transform','Travel','Uncover','Uphold','Weaken']
-  },
-  {
-    id: 'theme', name: 'Theme',
-    entries: ['Ability','Advantage','Alliance','Authority','Balance','Barrier','Belief','Bond','Burden','Commerce','Community','Conflict','Connection','Creation','Crime','Culture','Debt','Decay','Deception','Defense','Destiny','Discovery','Division','Domination','Dream','Duty','Enemy','Faction','Faith','Fear','Freedom','Grief','Healing','History','Home','Hope','Humanity','Isolation','Justice','Knowledge','Land','Legacy','Loss','Memory','Mystery','Nature','Opportunity','Opposition','Peace','Power','Pride','Protection','Rebellion','Religion','Reputation','Resource','Responsibility','Revenge','Ruin','Scarcity','Secret','Shelter','Spirituality','Strength','Survival','Tradition','Truth','Value','Violence','Wealth','Wisdom']
-  },
-  {
-    id: 'region', name: 'Region',
-    entries: ['Barrier Islands','Ragged Coast','Deep Wilds','Flooded Lands','Havens','Hinterlands','Ironlands','Tempest Hills','Veiled Mountains']
-  },
-  {
-    id: 'location', name: 'Location',
-    entries: ['Alcove','Arch','Barrow','Basin','Battlefield','Bluff','Bog','Bridge','Cairn','Camp','Cavern','Cleft','Coast','Compound','Crater','Crossroads','Den','Desert','Dune','Encampment','Farmstead','Fen','Ford','Forest','Fortress','Glade','Gorge','Grotto','Hamlet','Harbor','Hills','Hollow','Hut','Island','Lair','Lake','Marsh','Meadow','Mine','Moor','Mountain','Outpost','Pass','Peak','Plain','Plateau','Pool','Ruin','Sea','Settlement','Shore','Shrine','Spire','Spring','Steppe','Stronghold','Swamp','Temple','Tomb','Tower','Town','Trail','Tundra','Valley','Vault','Village','Waterfall','Wayside']
-  },
-  {
-    id: 'npc-descriptor', name: 'NPC Descriptor',
-    entries: ['Abandoned','Afflicted','Aggressive','Ambitious','Ancient','Angry','Anxious','Apathetic','Arrogant','Brutish','Calm','Caring','Cautious','Charismatic','Clever','Cold','Committed','Confident','Confused','Corrupt','Courageous','Cruel','Cunning','Dangerous','Deceitful','Defensive','Desperate','Devoted','Distrustful','Dogmatic','Domineering','Doomed','Driven','Elusive','Erratic','Experienced','Faithful','Fearful','Fierce','Foolish','Greedy','Grim','Guarded','Hardy','Haunted','Helpful','Honest','Honorable','Humble','Hungry','Idealistic','Impulsive','Inquisitive','Intelligent','Isolated','Jaded','Kind','Known','Lawful','Lonely','Loyal','Manipulative','Mature','Meek','Merciful','Murderous','Mysterious','Naive','Nervous','Noble','Obsessed','Optimistic','Outcast','Patient','Paranoid','Passionate','Perceptive','Pious','Powerful','Proud','Rebellious','Reckless','Renowned','Resentful','Resigned','Resourceful','Ruthless','Sagely','Secretive','Selfish','Sensitive','Shrewd','Skilled','Sly','Stern','Stubborn','Suspicious','Tenacious','Treacherous','Trustworthy','Unyielding','Vengeful','Violent','Wary','Weary','Wise','Wretched']
-  },
-  {
-    id: 'npc-role', name: 'NPC Role',
-    entries: ['Alchemist','Archer','Artificer','Assassin','Bandit','Bard','Beggar','Blacksmith','Builder','Champion','Clergy','Commander','Convict','Courier','Cultist','Defender','Deserter','Diplomat','Elder','Emissary','Engineer','Envoy','Exile','Explorer','Farmer','Feudal lord','Fighter','Fugitive','Guide','Guard','Healer','Herbalist','Hunter','Informant','Inquisitor','Inventor','Investigator','Jailer','Judge','Knight','Leader','Mage','Mercenary','Merchant','Messenger','Militia','Miner','Monk','Navigator','Noble','Nomad','Oracle','Outcast','Outsider','Philosopher','Pilgrim','Pirate','Politician','Priest','Prince/Princess','Prophet','Ranger','Rebel','Rogue','Sailor','Scholar','Scout','Shaman','Soldier','Spy','Steward','Summoner','Thief','Tracker','Trader','Traveler','Villain','Wanderer','Warden','Warrior','Witch','Wizard','Warlord']
-  },
-  {
-    id: 'pay-the-price', name: 'Pay the Price',
-    entries: [
-      'A person or community you trusted loses faith in you',
-      'A person or community you care about is harmed',
-      'A person or community you care about is put in danger',
-      'You are separated from something or someone',
-      'Your action has an unintended effect',
-      'Something of value is lost or destroyed',
-      'The current situation worsens',
-      'A new threat or complication is revealed',
-      'It causes a delay or puts you at a disadvantage',
-      'Pay a cost to move forward',
-      'Your reserve, supply, or resources are depleted',
-      'Your action is blocked or your progress is undone',
-      'Harm is inflicted on you or a companion',
-      'Roll twice more on this table — both results apply'
-    ]
-  }
+  { id:'action', name:'Action',
+    entries:['Abandon','Acquire','Advance','Arrive','Avenge','Avoid','Begin','Breach','Build','Burn','Capture','Challenge','Change','Clash','Command','Construct','Create','Damage','Decay','Defeat','Defend','Delay','Deliver','Demand','Destroy','Distract','Eliminate','Endure','Escalate','Explore','Fight','Find','Follow','Fortify','Gather','Guard','Guide','Harm','Hide','Hunt','Initiate','Invade','Investigate','Lead','Leave','Liberate','Locate','Lose','Manipulate','Mourn','Move','Negotiate','Oppose','Overwhelm','Patrol','Protect','Pursue','Raid','Reach','Release','Resist','Restore','Reveal','Risk','Rob','Search','Seize','Summon','Support','Surrender','Survey','Survive','Take','Transform','Travel','Uncover','Uphold','Weaken'] },
+  { id:'theme', name:'Theme',
+    entries:['Ability','Alliance','Authority','Balance','Belief','Bond','Burden','Commerce','Community','Conflict','Creation','Crime','Culture','Debt','Decay','Deception','Defense','Destiny','Discovery','Division','Domination','Dream','Duty','Enemy','Faith','Fear','Freedom','Grief','Healing','History','Home','Hope','Humanity','Isolation','Justice','Knowledge','Land','Legacy','Loss','Memory','Mystery','Nature','Opportunity','Opposition','Peace','Power','Pride','Protection','Rebellion','Religion','Reputation','Resource','Responsibility','Revenge','Ruin','Scarcity','Secret','Shelter','Spirituality','Strength','Survival','Tradition','Truth','Violence','Wealth','Wisdom'] },
+  { id:'region', name:'Region',
+    entries:['Barrier Islands','Ragged Coast','Deep Wilds','Flooded Lands','Havens','Hinterlands','Ironlands','Tempest Hills','Veiled Mountains'] },
+  { id:'location', name:'Location',
+    entries:['Alcove','Arch','Barrow','Basin','Battlefield','Bluff','Bog','Bridge','Cairn','Camp','Cavern','Cleft','Coast','Compound','Crater','Crossroads','Den','Desert','Encampment','Farmstead','Fen','Ford','Forest','Fortress','Glade','Gorge','Grotto','Hamlet','Harbor','Hills','Hollow','Hut','Island','Lair','Lake','Marsh','Meadow','Mine','Moor','Mountain','Outpost','Pass','Peak','Plain','Pool','Ruin','Shore','Shrine','Spire','Spring','Stronghold','Swamp','Temple','Tomb','Tower','Town','Trail','Valley','Vault','Village','Waterfall'] },
+  { id:'npc-role', name:'NPC Role',
+    entries:['Alchemist','Archer','Assassin','Bandit','Bard','Beggar','Blacksmith','Champion','Clergy','Commander','Convict','Courier','Cultist','Defender','Deserter','Diplomat','Elder','Exile','Explorer','Farmer','Fighter','Fugitive','Guide','Guard','Healer','Herbalist','Hunter','Informant','Investigator','Knight','Leader','Mercenary','Merchant','Messenger','Militia','Miner','Monk','Navigator','Noble','Nomad','Oracle','Outcast','Pilgrim','Pirate','Ranger','Rebel','Rogue','Sailor','Scholar','Scout','Shaman','Soldier','Spy','Steward','Thief','Tracker','Trader','Traveler','Wanderer','Warden','Warrior','Wizard','Warlord'] },
+  { id:'npc-trait', name:'NPC Trait',
+    entries:['Abandoned','Afflicted','Aggressive','Ambitious','Angry','Arrogant','Calm','Caring','Cautious','Charismatic','Clever','Cold','Committed','Corrupt','Courageous','Cruel','Cunning','Dangerous','Deceitful','Desperate','Devoted','Distrustful','Dogmatic','Domineering','Driven','Elusive','Experienced','Faithful','Fearful','Fierce','Greedy','Grim','Guarded','Hardy','Haunted','Helpful','Honest','Honorable','Humble','Idealistic','Impulsive','Intelligent','Isolated','Jaded','Kind','Lonely','Loyal','Manipulative','Meek','Merciful','Mysterious','Naive','Noble','Obsessed','Patient','Paranoid','Passionate','Perceptive','Pious','Powerful','Proud','Rebellious','Reckless','Resentful','Resourceful','Ruthless','Secretive','Selfish','Shrewd','Skilled','Stern','Stubborn','Suspicious','Tenacious','Treacherous','Trustworthy','Vengeful','Violent','Wary','Weary','Wise','Wretched'] },
+  { id:'pay-price', name:'Pay the Price',
+    entries:['A person or community you trusted loses faith in you','A person or community you care about is harmed','A person or community you care about is put in danger','You are separated from something or someone important','Your action has an unintended consequence','Something of value is lost or destroyed','The current situation worsens','A new threat or complication is revealed','You are delayed or put at a disadvantage','Your reserves, supply, or resources are depleted','Your action is blocked or your progress is undone','You suffer harm or stress','You are captured, cornered, or left without options','Roll twice — both outcomes apply'] }
 ];
 
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // STATE
-// ══════════════════════════════════════════════════
-const defaultChar = () => ({
-  name: '',
-  stats: { edge: 1, heart: 1, iron: 1, shadow: 1, wits: 1 },
-  health: 5, spirit: 5, supply: 5, momentum: 2,
-  assets: [], bonds: []
-});
+// ═══════════════════════════════════════════════════
+function freshState() {
+  return {
+    char: { name:'', stats:{edge:1,heart:1,iron:1,shadow:1,wits:1}, health:5, spirit:5, supply:5, momentum:2, assets:[], bonds:[] },
+    vows: [], log: [], packs: [],
+    story: [{ title:'Chapter 1', text:'' }]
+  };
+}
 
-let state = {
-  char: defaultChar(),
-  vows: [],
-  log: [],
-  packs: []
-};
-
+let S = freshState();
 let lastRoll = null;
 let lastOracle = null;
-let selectedStat = null;
+let selStat = null;
+let curChapter = 0;
+let storyTimer = null;
 
-function load() {
-  try {
-    const saved = localStorage.getItem('lt-state');
-    if (saved) state = { ...state, ...JSON.parse(saved) };
-  } catch(e) {}
+function loadState() {
+  try { const d = localStorage.getItem('lt2'); if (d) S = { ...freshState(), ...JSON.parse(d) }; } catch(e) {}
 }
+function saveState() { try { localStorage.setItem('lt2', JSON.stringify(S)); } catch(e) {} }
 
-function save() {
-  localStorage.setItem('lt-state', JSON.stringify(state));
-}
-
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // NAV
-// ══════════════════════════════════════════════════
-function showScreen(id, btn) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
-  btn.classList.add('active');
-  if (id === 'character') renderCharacter();
-  if (id === 'vows') renderVows();
-  if (id === 'log') renderLog();
-  if (id === 'packs') renderPacks();
-  if (id === 'play') populateOracleTables();
-  if (id === 'story') renderStory();
+// ═══════════════════════════════════════════════════
+function nav(id, btn) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.getElementById('s-' + id).classList.add('on');
+  btn.classList.add('on');
+  if (id === 'char')    renderChar();
+  if (id === 'vows')    renderVows();
+  if (id === 'journal') renderJournal();
+  if (id === 'world')   renderWorld();
+  if (id === 'play')    fillOracleTables();
 }
 
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// HOW TO PLAY
+// ═══════════════════════════════════════════════════
+function toggleHowto(btn) {
+  const body = btn.nextElementSibling;
+  body.classList.toggle('on');
+  btn.querySelector('span').textContent = body.classList.contains('on') ? '▴' : '▾';
+}
+
+// ═══════════════════════════════════════════════════
 // PLAY — MOVES
-// ══════════════════════════════════════════════════
-function populateMoves() {
-  const sel = document.getElementById('move-select');
+// ═══════════════════════════════════════════════════
+function fillMoves() {
+  const sel = document.getElementById('move-sel');
   const cats = ['adventure','relationship','combat','suffer','quest','fate'];
-  const labels = {adventure:'Adventure',relationship:'Relationship',combat:'Combat',suffer:'Suffer',quest:'Quest',fate:'Fate'};
+  const labels = { adventure:'Adventure', relationship:'Relationship', combat:'Combat', suffer:'Suffer', quest:'Quest', fate:'Fate' };
   cats.forEach(cat => {
-    const group = document.createElement('optgroup');
-    group.label = labels[cat];
-    MOVES.filter(m => m.category === cat).forEach(m => {
-      const opt = document.createElement('option');
-      opt.value = m.name;
-      opt.textContent = m.name;
-      group.appendChild(opt);
+    const g = document.createElement('optgroup');
+    g.label = labels[cat];
+    MOVES.filter(m => m.cat === cat).forEach(m => {
+      const o = document.createElement('option');
+      o.value = m.name; o.textContent = m.name;
+      g.appendChild(o);
     });
-    sel.appendChild(group);
+    sel.appendChild(g);
   });
 }
 
-function onMoveChange() {
-  const name = document.getElementById('move-select').value;
-  const trigger = document.getElementById('move-trigger');
-  const statRow = document.getElementById('stat-select-row');
-  const resultDiv = document.getElementById('roll-result');
-  resultDiv.style.display = 'none';
-  selectedStat = null;
+function onMove() {
+  const name = document.getElementById('move-sel').value;
+  const tb = document.getElementById('move-trigger');
+  const sr = document.getElementById('stat-row');
+  document.getElementById('result-card').style.display = 'none';
+  selStat = null;
 
-  if (!name) {
-    trigger.classList.remove('visible');
-    statRow.classList.remove('visible');
-    return;
-  }
-
+  if (!name) { tb.classList.remove('on'); sr.classList.remove('on'); return; }
   const move = MOVES.find(m => m.name === name);
-  trigger.textContent = move.trigger;
-  trigger.classList.add('visible');
+  tb.textContent = move.trigger;
+  tb.classList.add('on');
 
-  statRow.innerHTML = '';
-  statRow.classList.remove('visible');
-
-  const stats = move.stats && move.stats.length ? move.stats : null;
-  if (!stats || move.isProgress || move.isSpecial) {
+  sr.innerHTML = ''; sr.classList.remove('on');
+  if (move.isSpecial || move.isProgress) {
     if (move.isProgress) {
-      const note = document.createElement('p');
-      note.style.cssText = 'font-size:12px;color:var(--text-dim);margin-top:8px';
-      note.textContent = 'This is a progress roll — no stat used. Score is taken from the relevant vow\'s progress track.';
-      statRow.appendChild(note);
-      statRow.classList.add('visible');
+      sr.innerHTML = '<p style="font-size:12px;color:var(--dim);margin-top:6px">Progress roll — uses your vow\'s progress score, not a stat. Go to Vows to resolve.</p>';
+      sr.classList.add('on');
     }
     return;
   }
-
-  if (stats[0] === 'any') {
-    ['edge','heart','iron','shadow','wits'].forEach(s => addStatChip(statRow, s));
-  } else {
-    stats.forEach(s => addStatChip(statRow, s));
-  }
-  if (stats.length === 1) {
-    // auto-select if only one option
-    const first = statRow.querySelector('.stat-chip');
-    if (first) first.click();
-  }
-  statRow.classList.add('visible');
+  const stats = move.stats && move.stats.length ? move.stats : null;
+  if (!stats) return;
+  stats.forEach(s => {
+    const chip = document.createElement('button');
+    chip.className = 'stat-chip';
+    chip.dataset.s = s;
+    chip.textContent = s.charAt(0).toUpperCase() + s.slice(1) + ' +' + (S.char.stats[s] || 0);
+    chip.onclick = () => {
+      sr.querySelectorAll('.stat-chip').forEach(c => c.classList.remove('on'));
+      chip.classList.add('on'); selStat = s;
+    };
+    sr.appendChild(chip);
+  });
+  if (stats.length === 1) sr.querySelector('.stat-chip').click();
+  sr.classList.add('on');
 }
 
-function addStatChip(row, stat) {
-  const val = state.char.stats[stat] || 0;
-  const chip = document.createElement('button');
-  chip.className = 'stat-chip';
-  chip.dataset.stat = stat;
-  chip.textContent = stat.charAt(0).toUpperCase() + stat.slice(1) + ' +' + val;
-  chip.onclick = () => {
-    row.querySelectorAll('.stat-chip').forEach(c => c.classList.remove('selected'));
-    chip.classList.add('selected');
-    selectedStat = stat;
-  };
-  row.appendChild(chip);
-}
+// ═══════════════════════════════════════════════════
+// DICE ROLL
+// ═══════════════════════════════════════════════════
+function d(n) { return Math.floor(Math.random() * n) + 1; }
 
-function rollMove() {
-  const name = document.getElementById('move-select').value;
+function startRoll() {
+  const name = document.getElementById('move-sel').value;
   if (!name) { toast('Choose a move first'); return; }
   const move = MOVES.find(m => m.name === name);
+  if (move.isSpecial) { toast('No roll needed — handle this narratively'); return; }
+  if (move.isProgress) { toast('Use the Vows screen to make a progress roll'); return; }
+  if (move.stats && move.stats.length > 1 && !selStat) { toast('Select a stat to roll with'); return; }
 
-  if (move.isSpecial) { toast('Handle this move narratively — no dice roll needed.'); return; }
+  const stat = selStat || (move.stats[0]);
+  const statVal = S.char.stats[stat] || 0;
 
-  if (move.isProgress) {
-    // progress roll: prompt user to pick a vow
-    const activeVows = state.vows.filter(v => v.status === 'active');
-    if (!activeVows.length) { toast('No active vows — swear one first'); return; }
-    // use first active vow for simplicity; show selector if multiple
-    const vow = activeVows[0];
-    const progressScore = Math.min(10, Math.floor(vow.progressTicks / 4));
-    const c1 = d(10), c2 = d(10);
-    const outcome = calcOutcome(progressScore, c1, c2);
-    const isMatch = c1 === c2;
-    lastRoll = { move: move.name, type: 'progress', progressScore, c1, c2, outcome, isMatch, vow: vow.text };
-    renderRollResult(move, progressScore, null, c1, c2, outcome, isMatch, null, true);
-    return;
-  }
+  // Show dice area immediately in rolling state
+  const card = document.getElementById('result-card');
+  card.style.display = 'block';
+  document.getElementById('outcome-area').classList.remove('on');
 
-  if (!selectedStat && move.stats && move.stats.length && move.stats[0] !== 'any') {
-    if (move.stats.length > 1) { toast('Select a stat to roll with'); return; }
-  }
+  const row = document.getElementById('dice-row');
+  row.innerHTML = '';
+  const dA = makeDie('d6', 'action-die'); row.appendChild(dA.wrap);
+  const vsEl = document.createElement('div'); vsEl.className = 'vs-lbl'; vsEl.textContent = '→'; row.appendChild(vsEl);
+  const dScore = makeDie('score', 'score-die'); row.appendChild(dScore.wrap);
+  const vs2 = document.createElement('div'); vs2.className = 'vs-lbl'; vs2.textContent = 'vs'; row.appendChild(vs2);
+  const dC1 = makeDie('d10', 'challenge'); row.appendChild(dC1.wrap);
+  const dC2 = makeDie('d10', 'challenge'); row.appendChild(dC2.wrap);
 
-  const stat = selectedStat || (move.stats && move.stats[0]) || 'wits';
-  const statVal = state.char.stats[stat] || 0;
-  const actionDie = d(6);
-  const rawScore = actionDie + statVal;
-  const actionScore = Math.min(10, rawScore);
-  const c1 = d(10), c2 = d(10);
-  const outcome = calcOutcome(actionScore, c1, c2);
-  const isMatch = c1 === c2;
+  // Animate
+  let tick = 0;
+  const anim = setInterval(() => {
+    dA.el.textContent = d(6);
+    dScore.el.textContent = d(10);
+    dC1.el.textContent = d(10);
+    dC2.el.textContent = d(10);
+    tick++;
+    if (tick >= 14) {
+      clearInterval(anim);
+      // Final values
+      const ad = d(6);
+      const c1 = d(10), c2 = d(10);
+      const score = Math.min(10, ad + statVal);
+      const outcome = calcOutcome(score, c1, c2);
+      const isMatch = c1 === c2;
 
-  lastRoll = { move: move.name, type: 'action', stat, statVal, actionDie, actionScore, c1, c2, outcome, isMatch };
-  renderRollResult(move, actionScore, actionDie, c1, c2, outcome, isMatch, statVal, false);
+      settle(dA.el, ad, true);
+      settle(dScore.el, score, true);
+      settle(dC1.el, c1, outcome === 'strong' || score > c1);
+      settle(dC2.el, c2, outcome === 'strong' || score > c2);
+      if (isMatch) { dC1.el.classList.add('match-die'); dC2.el.classList.add('match-die'); }
+
+      // Label updates
+      dA.lbl.textContent = 'd6 +' + statVal;
+      dScore.lbl.textContent = 'score';
+
+      lastRoll = { move: name, stat, statVal, ad, score, c1, c2, outcome, isMatch };
+      setTimeout(() => showOutcome(move, score, c1, c2, outcome, isMatch), 200);
+    }
+  }, 55);
 }
 
-function d(sides) { return Math.floor(Math.random() * sides) + 1; }
+function makeDie(lbl, cls) {
+  const wrap = document.createElement('div');
+  wrap.className = 'die-wrap';
+  const el = document.createElement('div');
+  el.className = 'die rolling ' + cls;
+  el.textContent = '?';
+  const l = document.createElement('div');
+  l.className = 'die-lbl';
+  l.textContent = lbl;
+  wrap.appendChild(el); wrap.appendChild(l);
+  return { wrap, el, lbl: l };
+}
+
+function settle(el, val, beaten) {
+  el.classList.remove('rolling');
+  el.textContent = val;
+  if (el.classList.contains('challenge')) {
+    el.classList.add(beaten ? 'beat' : 'lost');
+  }
+  el.classList.add('settled');
+}
 
 function calcOutcome(score, c1, c2) {
-  const beats1 = score > c1, beats2 = score > c2;
-  if (beats1 && beats2) return 'strong';
-  if (beats1 || beats2) return 'weak';
+  const b1 = score > c1, b2 = score > c2;
+  if (b1 && b2) return 'strong';
+  if (b1 || b2) return 'weak';
   return 'miss';
 }
 
-function renderRollResult(move, score, actionDie, c1, c2, outcome, isMatch, statVal, isProgress) {
-  const resultDiv = document.getElementById('roll-result');
-  const diceDisplay = document.getElementById('dice-display');
-  const badgesEl = document.getElementById('outcome-badges');
-  const hintEl = document.getElementById('momentum-hint');
-  const outcomeTextEl = document.getElementById('outcome-text');
+function showOutcome(move, score, c1, c2, outcome, isMatch) {
+  const area = document.getElementById('outcome-area');
+  const badges = document.getElementById('badges');
+  const tip = document.getElementById('mom-tip');
+  const tipText = document.getElementById('mom-tip-text');
+  const outText = document.getElementById('outcome-text');
 
-  diceDisplay.innerHTML = '';
-
-  if (!isProgress) {
-    // action die
-    const dieEl = document.createElement('div');
-    dieEl.style.display = 'flex';
-    dieEl.style.flexDirection = 'column';
-    dieEl.style.alignItems = 'center';
-    dieEl.innerHTML = `<div class="die action">${actionDie}</div><div class="die-label">d6+${statVal}</div>`;
-    diceDisplay.appendChild(dieEl);
-
-    const vsEl = document.createElement('div');
-    vsEl.textContent = '→';
-    vsEl.style.color = 'var(--text-dim)';
-    diceDisplay.appendChild(vsEl);
-  }
-
-  const scoreEl = document.createElement('div');
-  scoreEl.style.display = 'flex';
-  scoreEl.style.flexDirection = 'column';
-  scoreEl.style.alignItems = 'center';
-  scoreEl.innerHTML = `<div class="die" style="border-color:var(--accent);color:var(--accent);font-size:18px">${score}</div><div class="die-label">${isProgress ? 'progress' : 'score'}</div>`;
-  diceDisplay.appendChild(scoreEl);
-
-  const vsEl2 = document.createElement('div');
-  vsEl2.textContent = 'vs';
-  vsEl2.style.color = 'var(--text-dim)';
-  diceDisplay.appendChild(vsEl2);
-
-  [c1, c2].forEach((cv, i) => {
-    const beaten = score > cv;
-    const el = document.createElement('div');
-    el.style.display = 'flex';
-    el.style.flexDirection = 'column';
-    el.style.alignItems = 'center';
-    el.innerHTML = `<div class="die challenge${beaten?' beaten':' lost'}${isMatch?' match-die':''}">${cv}</div><div class="die-label">d10</div>`;
-    diceDisplay.appendChild(el);
-  });
-
-  // Outcome badges
-  const outLabel = outcome === 'strong' ? 'Strong Hit' : outcome === 'weak' ? 'Weak Hit' : 'Miss';
-  let badgeHTML = `<span class="outcome-badge ${outcome}">${outLabel}</span>`;
-  if (isMatch) badgeHTML += `<span class="outcome-badge match">${outcome === 'miss' ? '⚡ Complication' : '✨ Opportunity'}</span>`;
-  badgesEl.innerHTML = badgeHTML;
+  const labels = { strong:'Strong Hit', weak:'Weak Hit', miss:'Miss' };
+  const cls = { strong:'badge-strong', weak:'badge-weak', miss:'badge-miss' };
+  let bHTML = `<span class="badge ${cls[outcome]}">${labels[outcome]}</span>`;
+  if (isMatch) bHTML += `<span class="badge badge-match">${outcome === 'miss' ? '⚡ Complication' : '✨ Opportunity'}</span>`;
+  badges.innerHTML = bHTML;
 
   // Momentum hint
-  const mom = state.char.momentum;
-  hintEl.classList.remove('visible');
-  const hintTextEl = document.getElementById('momentum-hint-text');
+  tip.classList.remove('on');
+  const mom = S.char.momentum;
   if (mom > 0) {
-    if (outcome === 'miss' && mom > Math.max(c1, c2)) {
-      hintTextEl.textContent = `Burn momentum (${mom}) to upgrade this miss to a weak hit.`;
-      hintEl.classList.add('visible');
-    } else if (outcome === 'weak' && mom > Math.max(c1, c2)) {
-      hintTextEl.textContent = `Burn momentum (${mom}) to upgrade this weak hit to a strong hit.`;
-      hintEl.classList.add('visible');
+    const maxC = Math.max(c1, c2);
+    if (outcome === 'miss' && mom > maxC) {
+      tipText.textContent = `You have +${mom} momentum — burn it to upgrade to a weak hit.`;
+      tip.classList.add('on');
+    } else if (outcome === 'weak' && mom > maxC) {
+      tipText.textContent = `You have +${mom} momentum — burn it to upgrade to a strong hit.`;
+      tip.classList.add('on');
     }
   }
 
-  // Outcome text
-  const moveText = outcome === 'strong' ? move.strongHit : outcome === 'weak' ? move.weakHit : move.miss;
-  let fullText = moveText;
-  if (isMatch) fullText += outcome === 'miss' ? ' <em>(Match — an added complication.)</em>' : ' <em>(Match — an added twist or opportunity.)</em>';
-  outcomeTextEl.innerHTML = fullText;
+  const moveText = outcome === 'strong' ? move.strong : outcome === 'weak' ? move.weak : move.miss;
+  let full = moveText;
+  if (isMatch) full += outcome === 'miss' ? ' <em style="color:var(--purple)">(Match — an added complication unfolds.)</em>' : ' <em style="color:var(--purple)">(Match — an unexpected opportunity or twist.)</em>';
+  outText.innerHTML = full;
 
-  resultDiv.style.display = 'block';
+  area.classList.add('on');
 }
 
-function burnMomentum() {
+function burnMom() {
   if (!lastRoll) return;
-  const mom = state.char.momentum;
   const { c1, c2, outcome } = lastRoll;
   if (outcome === 'strong') { toast('Already a strong hit'); return; }
+  const mom = S.char.momentum;
   if (mom <= 0) { toast('No positive momentum to burn'); return; }
-  const newScore = mom;
-  const newOutcome = calcOutcome(newScore, c1, c2);
-  if (newOutcome === outcome) { toast('Momentum isn\'t enough to change the outcome'); return; }
-  // burn momentum
-  state.char.momentum = state.char.momentum < 0 ? -6 : 0; // reset to 0 or -6
-  // reset value is typically 2 but can vary; for simplicity reset to 2
-  state.char.momentum = 2;
+  const newOutcome = calcOutcome(mom, c1, c2);
+  if (newOutcome === outcome) { toast('Momentum not high enough to change the outcome'); return; }
+  S.char.momentum = 2; // reset
   lastRoll.outcome = newOutcome;
-  lastRoll.momentumBurned = true;
-  save();
-  renderCharacter();
-  toast('Momentum burned! Outcome upgraded.');
-  const move = MOVES.find(m => m.name === lastRoll.move) || { strongHit:'', weakHit:'', miss:'' };
-  renderRollResult(move, newScore, lastRoll.actionDie, c1, c2, newOutcome, lastRoll.isMatch, lastRoll.statVal, lastRoll.type === 'progress');
+  lastRoll.burned = true;
+  saveState();
+  document.getElementById('mom-display').textContent = S.char.momentum;
+  const move = MOVES.find(m => m.name === lastRoll.move);
+  showOutcome(move, mom, c1, c2, newOutcome, lastRoll.isMatch);
+  toast('Momentum burned — outcome upgraded');
 }
 
-function logLastRoll() {
+function logRoll() {
   if (!lastRoll) return;
-  const { move: moveName, outcome, c1, c2, actionScore, stat, momentumBurned } = lastRoll;
-  const outLabel = outcome === 'strong' ? 'Strong Hit' : outcome === 'weak' ? 'Weak Hit' : 'Miss';
-  let summary = `${moveName} — ${outLabel}`;
-  if (stat) summary += ` (${stat} +${state.char.stats[stat] || 0}, score ${actionScore} vs ${c1}/${c2})`;
-  if (momentumBurned) summary += ' [momentum burned]';
-  addLogEntry('move', summary);
-  toast('Added to log');
+  const { move, outcome, c1, c2, score, stat, statVal, burned } = lastRoll;
+  const ol = { strong:'Strong Hit', weak:'Weak Hit', miss:'Miss' }[outcome];
+  let sum = `${move} — ${ol}`;
+  if (stat) sum += ` (${stat} +${statVal}, score ${score} vs ${c1}/${c2})`;
+  if (burned) sum += ' [momentum burned]';
+  addLog('move', sum);
+  toast('Added to journal');
 }
 
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // ORACLE
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function allOracles() {
   let tables = [...CORE_ORACLES];
-  state.packs.forEach(p => {
-    if (p.customOracles) tables = tables.concat(p.customOracles.map(o => ({ ...o, packName: p.name })));
-  });
+  S.packs.forEach(p => { if (p.customOracles) tables = tables.concat(p.customOracles.map(o => ({ ...o, packName: p.name }))); });
   return tables;
 }
 
-function populateOracleTables() {
-  const sel = document.getElementById('oracle-table-select');
+function fillOracleTables() {
+  const sel = document.getElementById('tbl-sel');
   sel.innerHTML = '';
   allOracles().forEach(t => {
-    const opt = document.createElement('option');
-    opt.value = t.id;
-    opt.textContent = t.packName ? `${t.name} [${t.packName}]` : t.name;
-    sel.appendChild(opt);
+    const o = document.createElement('option');
+    o.value = t.id;
+    o.textContent = t.packName ? `${t.name} [${t.packName}]` : t.name;
+    sel.appendChild(o);
   });
 }
 
-function onOracleModeChange() {
-  const mode = document.getElementById('oracle-mode').value;
-  document.getElementById('oracle-yesno-col').style.display = mode === 'yesno' ? '' : 'none';
-  document.getElementById('oracle-table-col').style.display = mode === 'table' ? '' : 'none';
+function oModeChange() {
+  const yn = document.getElementById('omode').value === 'yn';
+  document.getElementById('odds-col').style.display = yn ? '' : 'none';
+  document.getElementById('tbl-col').style.display = yn ? 'none' : '';
 }
 
 function rollOracle() {
-  const q = document.getElementById('oracle-q').value.trim();
-  const mode = document.getElementById('oracle-mode').value;
-  let ans, rollDisplay;
+  const q = document.getElementById('oq').value.trim();
+  const mode = document.getElementById('omode').value;
+  let ans, sub;
 
-  if (mode === 'yesno') {
-    const threshold = parseInt(document.getElementById('oracle-odds').value);
+  if (mode === 'yn') {
+    const thr = parseInt(document.getElementById('odds').value);
     const roll = Math.floor(Math.random() * 100) + 1;
-    const yes = roll <= threshold;
-    ans = yes ? 'Yes' : 'No';
-    // add nuance
+    const yes = roll <= thr;
     const extreme = roll <= 10 || roll >= 91;
-    if (extreme && yes) ans = 'Yes, and…';
+    const borderline = yes ? roll > thr * 0.7 : roll < thr + (100 - thr) * 0.3;
+    if (extreme && yes)       ans = 'Yes, and…';
     else if (extreme && !yes) ans = 'No, and…';
-    else if (roll <= threshold * 0.25 || roll >= threshold + (100 - threshold) * 0.75) ans = yes ? 'Yes, but…' : 'No, but…';
-    rollDisplay = `Roll: ${roll} / threshold: ${threshold}`;
+    else if (borderline && yes)  ans = 'Yes, but…';
+    else if (borderline && !yes) ans = 'No, but…';
+    else ans = yes ? 'Yes' : 'No';
+    sub = `Roll: ${roll} / threshold: ${thr}`;
   } else {
-    const tableId = document.getElementById('oracle-table-select').value;
-    const table = allOracles().find(t => t.id === tableId);
-    if (!table) { toast('No table selected'); return; }
-    const idx = Math.floor(Math.random() * table.entries.length);
-    ans = table.entries[idx];
-    rollDisplay = `Table: ${table.name} (${idx + 1}/${table.entries.length})`;
+    const tblId = document.getElementById('tbl-sel').value;
+    const tbl = allOracles().find(t => t.id === tblId);
+    if (!tbl) { toast('No table selected'); return; }
+    const idx = Math.floor(Math.random() * tbl.entries.length);
+    ans = tbl.entries[idx];
+    sub = `${tbl.name} — entry ${idx + 1} of ${tbl.entries.length}`;
   }
 
-  lastOracle = { q, ans, rollDisplay };
-  document.getElementById('oracle-q-display').textContent = q ? `"${q}"` : '';
-  document.getElementById('oracle-ans-display').textContent = ans;
-  document.getElementById('oracle-roll-display').textContent = rollDisplay;
-  document.getElementById('oracle-result-box').style.display = 'block';
+  lastOracle = { q, ans, sub };
+  document.getElementById('oq-display').textContent = q ? `"${q}"` : '';
+  document.getElementById('oa-display').textContent = ans;
+  document.getElementById('osub-display').textContent = sub;
+  document.getElementById('oracle-out').classList.add('on');
 }
 
-function logLastOracle() {
+function logOracle() {
   if (!lastOracle) return;
   const { q, ans } = lastOracle;
-  const summary = q ? `"${q}" → ${ans}` : `Oracle: ${ans}`;
-  addLogEntry('oracle', summary);
-  toast('Added to log');
+  addLog('oracle', q ? `"${q}" → ${ans}` : `Oracle: ${ans}`);
+  toast('Added to journal');
 }
 
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // CHARACTER
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function saveChar() {
-  state.char.name = document.getElementById('char-name').value;
-  save();
-  const display = document.getElementById('char-name-display');
-  display.textContent = state.char.name ? state.char.name.toUpperCase() : '';
+  S.char.name = document.getElementById('cname').value;
+  saveState();
+  document.getElementById('char-badge').textContent = S.char.name ? S.char.name.toUpperCase() : '';
 }
 
-function renderCharacter() {
-  document.getElementById('char-name').value = state.char.name || '';
-  document.getElementById('char-name-display').textContent = state.char.name ? state.char.name.toUpperCase() : '';
+function renderChar() {
+  document.getElementById('cname').value = S.char.name || '';
+  document.getElementById('char-badge').textContent = S.char.name ? S.char.name.toUpperCase() : '';
 
-  // Stat grid
+  // Stats
   const grid = document.getElementById('stat-grid');
   grid.innerHTML = '';
   ['edge','heart','iron','shadow','wits'].forEach(s => {
     const cell = document.createElement('div');
     cell.className = 'stat-cell';
-    cell.innerHTML = `<div class="stat-name">${s}</div>
-      <input type="number" min="1" max="3" value="${state.char.stats[s]||1}"
-        style="width:100%;text-align:center;font-family:var(--font-mono);font-size:20px;color:var(--accent);background:transparent;border:none;outline:none"
-        onchange="state.char.stats['${s}']=Math.max(1,Math.min(3,parseInt(this.value)||1));save()">`;
+    cell.innerHTML = `<div class="stat-name">${s}</div><input class="stat-inp" type="number" min="1" max="3" value="${S.char.stats[s]||1}" onchange="S.char.stats['${s}']=Math.max(1,Math.min(3,parseInt(this.value)||1));saveState()">`;
     grid.appendChild(cell);
   });
 
-  // Tracks
-  renderTrack('health', 5, 'health');
-  renderTrack('spirit', 5, 'spirit');
-  renderTrack('supply', 5, 'supply');
-
-  // Momentum
-  document.getElementById('momentum-display').textContent = state.char.momentum;
+  renderTrack('h', 'ht', 5, 'health');
+  renderTrack('s', 'st', 5, 'spirit');
+  renderTrack('h', 'sut', 5, 'supply');
+  document.getElementById('hv').textContent  = S.char.health  + '/5';
+  document.getElementById('sv').textContent  = S.char.spirit  + '/5';
+  document.getElementById('suv').textContent = S.char.supply  + '/5';
+  document.getElementById('mom-display').textContent = S.char.momentum;
 
   // Assets
-  const assetsEl = document.getElementById('assets-display');
-  assetsEl.innerHTML = '';
-  (state.char.assets || []).forEach((a, i) => {
-    const span = document.createElement('span');
-    span.className = 'tag';
-    span.style.cursor = 'pointer';
-    span.title = 'Click to remove';
-    span.textContent = a;
-    span.onclick = () => { state.char.assets.splice(i, 1); save(); renderCharacter(); };
-    assetsEl.appendChild(span);
-  });
+  const al = document.getElementById('assets-list');
+  al.innerHTML = '';
+  (S.char.assets||[]).forEach((a,i) => { const t = document.createElement('div'); t.className='tag'; t.title='Click to remove'; t.textContent=a; t.onclick=()=>{ S.char.assets.splice(i,1); saveState(); renderChar(); }; al.appendChild(t); });
 
   // Bonds
-  const bondsEl = document.getElementById('bonds-display');
-  bondsEl.innerHTML = '';
-  (state.char.bonds || []).forEach((b, i) => {
-    const span = document.createElement('span');
-    span.className = 'tag';
-    span.style.cursor = 'pointer';
-    span.title = 'Click to remove';
-    span.textContent = b;
-    span.onclick = () => { state.char.bonds.splice(i, 1); save(); renderCharacter(); };
-    bondsEl.appendChild(span);
-  });
+  const bl = document.getElementById('bonds-list');
+  bl.innerHTML = '';
+  (S.char.bonds||[]).forEach((b,i) => { const t = document.createElement('div'); t.className='tag'; t.title='Click to remove'; t.textContent=b; t.onclick=()=>{ S.char.bonds.splice(i,1); saveState(); renderChar(); }; bl.appendChild(t); });
 }
 
-function renderTrack(key, max, cls) {
-  const track = document.getElementById(key + '-track');
-  const val = document.getElementById(key + '-val');
-  track.innerHTML = '';
-  val.textContent = state.char[key] + '/' + max;
+function renderTrack(cls, elId, max, key) {
+  const el = document.getElementById(elId);
+  el.innerHTML = '';
   for (let i = 1; i <= max; i++) {
-    const pip = document.createElement('div');
-    pip.className = 'track-pip' + (i <= state.char[key] ? ' filled ' + cls : '');
-    pip.onclick = () => { state.char[key] = (state.char[key] === i ? i - 1 : i); save(); renderTrack(key, max, cls); val.textContent = state.char[key] + '/' + max; };
-    track.appendChild(pip);
+    const p = document.createElement('div');
+    p.className = 'pip' + (i <= S.char[key] ? ' ' + cls : '');
+    p.onclick = () => { S.char[key] = S.char[key] === i ? i - 1 : i; saveState(); renderChar(); };
+    el.appendChild(p);
   }
 }
 
-function adjustMomentum(delta) {
-  state.char.momentum = Math.max(-6, Math.min(10, (state.char.momentum || 0) + delta));
-  document.getElementById('momentum-display').textContent = state.char.momentum;
-  save();
-}
+function adjMom(d) { S.char.momentum = Math.max(-6, Math.min(10, (S.char.momentum||0)+d)); document.getElementById('mom-display').textContent = S.char.momentum; saveState(); }
+function resetMom() { S.char.momentum = 2; document.getElementById('mom-display').textContent = 2; saveState(); }
 
-function resetMomentum() {
-  state.char.momentum = 2;
-  document.getElementById('momentum-display').textContent = 2;
-  save();
-}
+function addAsset() { const v = document.getElementById('asset-inp').value.trim(); if(!v) return; if(!S.char.assets) S.char.assets=[]; S.char.assets.push(v); document.getElementById('asset-inp').value=''; saveState(); renderChar(); }
+function addBond()  { const v = document.getElementById('bond-inp').value.trim();  if(!v) return; if(!S.char.bonds)  S.char.bonds=[];  S.char.bonds.push(v);  document.getElementById('bond-inp').value='';  saveState(); renderChar(); }
 
-function addAsset() {
-  const input = document.getElementById('asset-input');
-  const val = input.value.trim();
-  if (!val) return;
-  if (!state.char.assets) state.char.assets = [];
-  state.char.assets.push(val);
-  input.value = '';
-  save();
-  renderCharacter();
-}
-
-function addBond() {
-  const input = document.getElementById('bond-input');
-  const val = input.value.trim();
-  if (!val) return;
-  if (!state.char.bonds) state.char.bonds = [];
-  state.char.bonds.push(val);
-  input.value = '';
-  save();
-  renderCharacter();
-}
-
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // VOWS
-// ══════════════════════════════════════════════════
-const RANK_CONFIG = {
-  troublesome: { boxes: 12, ticks: 3 },
-  dangerous:   { boxes: 8,  ticks: 2 },
-  formidable:  { boxes: 8,  ticks: 2 },
-  extreme:     { boxes: 8,  ticks: 2 },
-  epic:        { boxes: 8,  ticks: 1 }
-};
+// ═══════════════════════════════════════════════════
+const RANK_CFG = { troublesome:{boxes:12,ticks:3}, dangerous:{boxes:8,ticks:2}, formidable:{boxes:8,ticks:2}, extreme:{boxes:8,ticks:2}, epic:{boxes:8,ticks:1} };
 
 function swearVow() {
-  const text = document.getElementById('vow-text').value.trim();
+  const text = document.getElementById('vow-inp').value.trim();
   const rank = document.getElementById('vow-rank').value;
   if (!text) { toast('Enter the vow text'); return; }
-  state.vows.push({ id: Date.now(), text, rank, progressTicks: 0, status: 'active' });
-  document.getElementById('vow-text').value = '';
-  save();
-  renderVows();
-  addLogEntry('move', `Swore a vow: "${text}" [${rank}]`);
+  S.vows.push({ id: Date.now(), text, rank, ticks: 0, status: 'active' });
+  document.getElementById('vow-inp').value = '';
+  saveState(); renderVows();
+  addLog('move', `Swore a vow: "${text}" [${rank}]`);
   toast('Vow sworn');
 }
 
 function renderVows() {
   const el = document.getElementById('vows-list');
   el.innerHTML = '';
-  const active = state.vows.filter(v => v.status === 'active');
-  const done = state.vows.filter(v => v.status !== 'active');
-
+  const active = S.vows.filter(v => v.status === 'active');
+  const done   = S.vows.filter(v => v.status !== 'active');
   if (!active.length && !done.length) {
-    el.innerHTML = '<p style="color:var(--text-dim);font-size:13px;text-align:center;padding:30px 0">No vows yet. Swear your first iron vow above.</p>';
+    el.innerHTML = '<p style="color:var(--dim);font-size:13px;text-align:center;padding:30px 0">No vows yet. Swear one above to begin your journey.</p>';
     return;
   }
-
-  active.forEach(v => el.appendChild(buildVowCard(v)));
+  active.forEach(v => el.appendChild(vowCard(v)));
   if (done.length) {
     const h = document.createElement('h3');
-    h.style.marginTop = '16px';
-    h.textContent = 'Completed / Forsaken';
+    h.style.marginTop = '16px'; h.textContent = 'Completed / Forsaken';
     el.appendChild(h);
-    done.forEach(v => el.appendChild(buildVowCard(v)));
+    done.forEach(v => el.appendChild(vowCard(v)));
   }
 }
 
-function buildVowCard(vow) {
-  const cfg = RANK_CONFIG[vow.rank] || { boxes: 8, ticks: 2 };
+function vowCard(vow) {
+  const cfg = RANK_CFG[vow.rank] || { boxes:8, ticks:2 };
   const card = document.createElement('div');
   card.className = 'vow-card';
+  const score = Math.min(10, Math.floor(vow.ticks / 4));
+  const maxT = cfg.boxes * 4;
 
-  const maxTicks = cfg.boxes * 4;
-  const boxes = cfg.boxes;
-  const filled = vow.progressTicks;
-
-  let progressHTML = '<div class="progress-row">';
-  for (let b = 0; b < boxes; b++) {
-    const ticksInBox = Math.min(4, Math.max(0, filled - b * 4));
-    const cls = ticksInBox >= 4 ? 't4' : ticksInBox >= 3 ? 't3' : ticksInBox >= 2 ? 't2' : ticksInBox >= 1 ? 't1' : '';
-    const label = ticksInBox === 4 ? '✕' : ticksInBox === 3 ? '⊡' : ticksInBox === 2 ? '▪' : ticksInBox === 1 ? '·' : '';
-    progressHTML += `<div class="progress-box ${cls}" onclick="tickVow(${vow.id},${cfg.ticks})">${label}</div>`;
+  let prog = '<div class="prog-row">';
+  for (let b = 0; b < cfg.boxes; b++) {
+    const t = Math.min(4, Math.max(0, vow.ticks - b * 4));
+    const lbl = t===4?'✕':t===3?'⊡':t===2?'▪':t===1?'·':'';
+    prog += `<div class="pbox t${t}" onclick="tickVow(${vow.id},${cfg.ticks})">${lbl}</div>`;
   }
-  progressHTML += '</div>';
+  prog += '</div>';
 
-  const progressScore = Math.min(10, Math.floor(vow.progressTicks / 4));
-
-  let actionsHTML = '';
-  if (vow.status === 'active') {
-    actionsHTML = `
-      <div class="vow-actions">
-        <button class="btn btn-sm" onclick="tickVow(${vow.id},${cfg.ticks})">Mark progress</button>
-        <button class="btn btn-sm btn-accent" onclick="resolveVow(${vow.id})">Resolve (score ${progressScore})</button>
-        <button class="btn btn-sm btn-danger" onclick="forsakeVow(${vow.id})">Forsake</button>
-      </div>`;
-  }
+  const acts = vow.status === 'active' ? `
+    <div class="vow-acts">
+      <button class="btn btn-sm" onclick="tickVow(${vow.id},${cfg.ticks})">Mark progress</button>
+      <button class="btn btn-sm btn-accent" onclick="resolveVow(${vow.id})">Resolve (score ${score})</button>
+      <button class="btn btn-sm btn-danger" onclick="forsakeVow(${vow.id})">Forsake</button>
+    </div>` : '';
 
   card.innerHTML = `
-    <div class="vow-header">
+    <div class="vow-head">
       <div class="vow-text">"${vow.text}"</div>
-      <span class="vow-rank">${vow.rank}</span>
+      <span class="vow-rank">${vow.rank}${vow.status !== 'active' ? ' · ' + vow.status : ''}</span>
     </div>
-    ${progressHTML}
-    <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">${vow.progressTicks}/${maxTicks} ticks · progress score ${progressScore}/10${vow.status !== 'active' ? ' · ' + vow.status.toUpperCase() : ''}</div>
-    ${actionsHTML}`;
+    ${prog}
+    <div style="font-size:11px;color:var(--dim);margin-bottom:4px">${vow.ticks}/${maxT} ticks · progress score ${score}/10</div>
+    ${acts}`;
   return card;
 }
 
 function tickVow(id, ticks) {
-  const vow = state.vows.find(v => v.id === id);
-  if (!vow || vow.status !== 'active') return;
-  const cfg = RANK_CONFIG[vow.rank] || { boxes: 8 };
-  const max = cfg.boxes * 4;
-  vow.progressTicks = Math.min(max, vow.progressTicks + ticks);
-  save();
-  renderVows();
-  addLogEntry('move', `Reached a milestone on "${vow.text}" (+${ticks} ticks)`);
+  const v = S.vows.find(v => v.id === id);
+  if (!v || v.status !== 'active') return;
+  const max = (RANK_CFG[v.rank]||{boxes:8}).boxes * 4;
+  v.ticks = Math.min(max, v.ticks + ticks);
+  saveState(); renderVows();
+  addLog('move', `Milestone reached on "${v.text}" (+${ticks} ticks)`);
 }
 
 function resolveVow(id) {
-  const vow = state.vows.find(v => v.id === id);
-  if (!vow) return;
-  const progressScore = Math.min(10, Math.floor(vow.progressTicks / 4));
+  const v = S.vows.find(v => v.id === id);
+  if (!v) return;
+  const score = Math.min(10, Math.floor(v.ticks / 4));
   const c1 = d(10), c2 = d(10);
-  const outcome = calcOutcome(progressScore, c1, c2);
-  const outLabel = outcome === 'strong' ? 'Strong Hit — vow fulfilled!' : outcome === 'weak' ? 'Weak Hit — progress, but at cost' : 'Miss — the vow is in peril';
-  if (outcome === 'strong') {
-    vow.status = 'fulfilled';
-    save();
-    toast('Vow fulfilled!');
-    addLogEntry('move', `Fulfilled vow: "${vow.text}" — ${outLabel} (${progressScore} vs ${c1}/${c2})`);
-  } else {
-    toast(outLabel);
-    addLogEntry('move', `Progress roll on "${vow.text}" — ${outLabel} (${progressScore} vs ${c1}/${c2})`);
-  }
-  renderVows();
-  renderLog();
+  const outcome = calcOutcome(score, c1, c2);
+  const lbl = { strong:'Strong Hit — vow fulfilled!', weak:'Weak Hit — progress, but at cost', miss:'Miss — the vow remains beyond reach' }[outcome];
+  if (outcome === 'strong') { v.status = 'fulfilled'; toast('Vow fulfilled!'); }
+  else toast(lbl);
+  saveState(); renderVows();
+  addLog('move', `Progress roll on "${v.text}" — ${lbl} (score ${score} vs ${c1}/${c2})`);
 }
 
 function forsakeVow(id) {
   if (!confirm('Forsake this vow? This cannot be undone.')) return;
-  const vow = state.vows.find(v => v.id === id);
-  if (!vow) return;
-  vow.status = 'forsaken';
-  save();
-  addLogEntry('move', `Forsook the vow: "${vow.text}"`);
-  renderVows();
+  const v = S.vows.find(v => v.id === id);
+  if (!v) return;
+  v.status = 'forsaken'; saveState(); renderVows();
+  addLog('move', `Forsook the vow: "${v.text}"`);
 }
 
-// ══════════════════════════════════════════════════
-// LOG
-// ══════════════════════════════════════════════════
-function addLogEntry(type, summary) {
-  state.log.unshift({ ts: Date.now(), type, summary });
-  if (state.log.length > 500) state.log = state.log.slice(0, 500);
-  save();
-  if (document.getElementById('screen-log').classList.contains('active')) renderLog();
+// ═══════════════════════════════════════════════════
+// JOURNAL
+// ═══════════════════════════════════════════════════
+function jTab(id, btn) {
+  document.querySelectorAll('.jpanel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.jtab').forEach(b => b.classList.remove('on'));
+  document.getElementById('jp-' + id).classList.add('on');
+  btn.classList.add('on');
+  if (id === 'log') renderLog();
+  if (id === 'story') renderStory();
 }
 
+function renderJournal() {
+  renderStory();
+}
+
+// Story
+function initStory() { if (!S.story) { S.story = [{ title:'Chapter 1', text:'' }]; saveState(); } }
+function renderStory() {
+  initStory();
+  const tabs = document.getElementById('ch-tabs');
+  tabs.innerHTML = '';
+  S.story.forEach((ch, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-sm' + (i === curChapter ? ' btn-accent' : '');
+    btn.textContent = ch.title;
+    btn.onclick = () => { curChapter = i; renderStory(); };
+    btn.ondblclick = () => { const n = prompt('Chapter name:', ch.title); if (n && n.trim()) { S.story[i].title = n.trim(); saveState(); renderStory(); } };
+    tabs.appendChild(btn);
+  });
+  const ed = document.getElementById('story-ed');
+  ed.value = S.story[curChapter].text;
+  updateWC();
+}
+function onStory() {
+  S.story[curChapter].text = document.getElementById('story-ed').value;
+  updateWC();
+  clearTimeout(storyTimer);
+  storyTimer = setTimeout(() => {
+    saveState();
+    const ind = document.getElementById('saved-ind');
+    ind.style.opacity = '1';
+    setTimeout(() => ind.style.opacity = '0', 1600);
+  }, 700);
+}
+function updateWC() { const t = document.getElementById('story-ed').value; const w = t.trim() ? t.trim().split(/\s+/).length : 0; document.getElementById('wc').textContent = w + ' word' + (w !== 1 ? 's' : ''); }
+function newChapter() { initStory(); S.story.push({ title:'Chapter ' + (S.story.length + 1), text:'' }); curChapter = S.story.length - 1; saveState(); renderStory(); document.getElementById('story-ed').focus(); }
+function delChapter() { if (S.story.length <= 1) { toast('Cannot delete the only chapter'); return; } if (!confirm('Delete "' + S.story[curChapter].title + '"?')) return; S.story.splice(curChapter, 1); curChapter = Math.max(0, curChapter - 1); saveState(); renderStory(); }
+
+// Log
+function addLog(type, sum) {
+  S.log.unshift({ ts: Date.now(), type, sum });
+  if (S.log.length > 500) S.log = S.log.slice(0, 500);
+  saveState();
+  if (document.getElementById('jp-log').classList.contains('on')) renderLog();
+}
 function renderLog() {
   const el = document.getElementById('log-list');
   const empty = document.getElementById('log-empty');
   el.innerHTML = '';
-  if (!state.log.length) { empty.style.display = ''; return; }
+  if (!S.log.length) { empty.style.display = ''; return; }
   empty.style.display = 'none';
-  state.log.forEach(entry => {
+  S.log.forEach(e => {
     const div = document.createElement('div');
     div.className = 'log-entry';
-    const date = new Date(entry.ts);
-    const ts = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    div.innerHTML = `<div class="log-ts">${ts}</div>
-      <div class="log-body">
-        <div class="log-type">${entry.type}</div>
-        <div class="log-summary">${entry.summary}</div>
-      </div>`;
+    const ts = new Date(e.ts).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+    div.innerHTML = `<div class="log-ts">${ts}</div><div class="log-body"><div class="log-type">${e.type}</div><div class="log-sum">${e.sum}</div></div>`;
     el.appendChild(div);
   });
 }
+function addNote() { document.getElementById('note-form').style.display = 'block'; document.getElementById('note-text').focus(); }
+function saveNote() { const t = document.getElementById('note-text').value.trim(); if(!t) return; addLog('note', t); document.getElementById('note-text').value=''; document.getElementById('note-form').style.display='none'; }
+function cancelNote() { document.getElementById('note-text').value=''; document.getElementById('note-form').style.display='none'; }
 
-function addNote() {
-  document.getElementById('log-note-form').style.display = 'block';
-  document.getElementById('note-text').focus();
-}
-
-function saveNote() {
-  const text = document.getElementById('note-text').value.trim();
-  if (!text) return;
-  addLogEntry('note', text);
-  document.getElementById('note-text').value = '';
-  document.getElementById('log-note-form').style.display = 'none';
-}
-
-function cancelNote() {
-  document.getElementById('note-text').value = '';
-  document.getElementById('log-note-form').style.display = 'none';
-}
-
-// ══════════════════════════════════════════════════
-// PACKS
-// ══════════════════════════════════════════════════
-function renderPacks() {
-  const el = document.getElementById('packs-list');
+// ═══════════════════════════════════════════════════
+// WORLD — PACKS
+// ═══════════════════════════════════════════════════
+function renderWorld() {
+  const el = document.getElementById('installed-packs');
   el.innerHTML = '';
-  if (!state.packs.length) {
-    el.innerHTML = '<p style="color:var(--text-dim);font-size:13px;margin-bottom:12px">No packs installed. Import a .json setting pack below.</p>';
-    return;
-  }
-  state.packs.forEach((p, i) => {
+  if (!S.packs.length) return;
+  const h = document.createElement('h3'); h.style.marginTop = '8px'; h.textContent = 'Installed'; el.appendChild(h);
+  S.packs.forEach((p, i) => {
     const card = document.createElement('div');
     card.className = 'pack-card';
-    const tableCount = (p.customOracles || []).length;
-    const seedCount = (p.scenarioSeeds || []).length;
-    card.innerHTML = `
-      <div class="pack-name">${p.name}</div>
-      <div class="pack-meta">${tableCount} oracle table${tableCount !== 1 ? 's' : ''} · ${seedCount} scenario seed${seedCount !== 1 ? 's' : ''}</div>
-      <div style="margin-top:10px">
-        <button class="btn btn-sm btn-danger" onclick="removePack(${i})">Remove</button>
-      </div>`;
+    const tc = (p.customOracles||[]).length, sc = (p.scenarioSeeds||[]).length;
+    card.innerHTML = `<div class="pack-name">${p.name}</div><div class="pack-meta">${tc} oracle table${tc!==1?'s':''} · ${sc} scenario seed${sc!==1?'s':''}</div><button class="btn btn-sm btn-danger" onclick="removePack(${i})">Remove</button>`;
     el.appendChild(card);
   });
 }
-
-function importPack(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
+function importPack(ev) {
+  const file = ev.target.files[0]; if(!file) return;
+  const r = new FileReader();
+  r.onload = e => {
     try {
-      const pack = JSON.parse(e.target.result);
-      if (!pack.id || !pack.name) { toast('Invalid pack — missing id or name'); return; }
-      if (state.packs.find(p => p.id === pack.id)) { toast('Pack already installed'); return; }
-      state.packs.push(pack);
-      save();
-      renderPacks();
-      populateOracleTables();
-      toast(`"${pack.name}" installed`);
+      const p = JSON.parse(e.target.result);
+      if (!p.id || !p.name) { toast('Invalid pack — missing id or name'); return; }
+      if (S.packs.find(x => x.id === p.id)) { toast('Pack already installed'); return; }
+      S.packs.push(p); saveState(); renderWorld(); fillOracleTables();
+      toast(`"${p.name}" installed`);
     } catch { toast('Failed to parse pack JSON'); }
   };
-  reader.readAsText(file);
-  event.target.value = '';
+  r.readAsText(file);
+  ev.target.value = '';
 }
+function removePack(i) { const name = S.packs[i].name; S.packs.splice(i,1); saveState(); renderWorld(); fillOracleTables(); toast(`"${name}" removed`); }
 
-function removePack(i) {
-  const name = state.packs[i].name;
-  state.packs.splice(i, 1);
-  save();
-  renderPacks();
-  populateOracleTables();
-  toast(`"${name}" removed`);
-}
-
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // UTILS
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function toast(msg) {
   const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2200);
+  el.textContent = msg; el.classList.add('on');
+  setTimeout(() => el.classList.remove('on'), 2400);
 }
-
 function confirmClear() {
-  if (!confirm('Delete ALL character data, vows, and session log? This cannot be undone.')) return;
-  state = { char: defaultChar(), vows: [], log: [], packs: [], story: [{ title: 'Chapter 1', text: '' }] };
-  currentChapterIdx = 0;
-  save();
-  renderCharacter();
-  renderVows();
-  renderLog();
-  renderPacks();
+  if (!confirm('Delete ALL data? This cannot be undone.')) return;
+  S = freshState(); saveState();
+  renderChar(); renderVows(); renderJournal(); renderWorld();
   toast('All data cleared');
 }
 
-// ══════════════════════════════════════════════════
-// STORY JOURNAL
-// ══════════════════════════════════════════════════
-let storyAutoSaveTimer = null;
-let currentChapterIdx = 0;
-
-function initStory() {
-  if (!state.story) {
-    state.story = [{ title: 'Chapter 1', text: '' }];
-    save();
-  }
-}
-
-function renderStory() {
-  initStory();
-  const tabs = document.getElementById('chapter-tabs');
-  tabs.innerHTML = '';
-  state.story.forEach((ch, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'btn btn-sm' + (i === currentChapterIdx ? ' btn-accent' : '');
-    btn.textContent = ch.title;
-    btn.onclick = () => { currentChapterIdx = i; renderStory(); };
-    // double-click to rename
-    btn.ondblclick = () => {
-      const name = prompt('Chapter name:', ch.title);
-      if (name && name.trim()) { state.story[i].title = name.trim(); save(); renderStory(); }
-    };
-    tabs.appendChild(btn);
-  });
-  const editor = document.getElementById('story-editor');
-  editor.value = state.story[currentChapterIdx].text;
-  updateWordCount();
-}
-
-function onStoryInput() {
-  state.story[currentChapterIdx].text = document.getElementById('story-editor').value;
-  updateWordCount();
-  clearTimeout(storyAutoSaveTimer);
-  storyAutoSaveTimer = setTimeout(() => {
-    save();
-    const ind = document.getElementById('story-saved-indicator');
-    ind.style.opacity = '1';
-    setTimeout(() => ind.style.opacity = '0', 1500);
-  }, 600);
-}
-
-function updateWordCount() {
-  const text = document.getElementById('story-editor').value;
-  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-  document.getElementById('story-word-count').textContent = words + ' word' + (words !== 1 ? 's' : '');
-}
-
-function newStoryChapter() {
-  initStory();
-  const num = state.story.length + 1;
-  state.story.push({ title: 'Chapter ' + num, text: '' });
-  currentChapterIdx = state.story.length - 1;
-  save();
-  renderStory();
-  document.getElementById('story-editor').focus();
-}
-
-function deleteCurrentChapter() {
-  if (state.story.length <= 1) { toast('Cannot delete the only chapter'); return; }
-  if (!confirm('Delete "' + state.story[currentChapterIdx].title + '"?')) return;
-  state.story.splice(currentChapterIdx, 1);
-  currentChapterIdx = Math.max(0, currentChapterIdx - 1);
-  save();
-  renderStory();
-}
-
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // INIT
-// ══════════════════════════════════════════════════
-load();
+// ═══════════════════════════════════════════════════
+loadState();
 initStory();
-populateMoves();
-populateOracleTables();
-renderCharacter();
+fillMoves();
+fillOracleTables();
+renderChar();
 
-// Service worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>
 </body>
 </html>

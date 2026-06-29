@@ -1,0 +1,134 @@
+{
+  "id": "drowned-coast",
+  "name": "The Drowned Coast",
+  "version": "1.0",
+  "description": "A maritime setting of flooded shores, wrecked galleons, salt-bleached villages, and things that follow ships home. Original content for The Lone Table.",
+  "credit": "Signal9 Studio. Not affiliated with Tomkin Press.",
+
+  "locationPrompts": [
+    "A tidal cave that floods in under an hour — something lives in the back of it",
+    "The wreck of the Ironsong, half-buried in black sand, listing hard to starboard",
+    "A salt-bleached fishing village built on stilts; three houses burned recently",
+    "A lighthouse no one maintains, but the light still turns every night",
+    "A kelp-choked sea-stack with a ruined stone tower at its peak",
+    "A shingle beach scattered with crates from a ship that sank six months ago",
+    "A smugglers' cove accessible only at low tide — two boats are hidden there now",
+    "A flooded chapel, its bell still audible on calm mornings",
+    "A sea-fort built on a sandbar that only appears at the lowest spring tides",
+    "A rope-bridge between two headlands, rotting, someone has crossed it recently",
+    "A whaling station long abandoned — the processing vats are full of something new",
+    "A graveyard of anchors, chains, and masts — the bones of a hundred ships"
+  ],
+
+  "scenarioSeeds": [
+    {
+      "title": "The Ironsong",
+      "vow": "I will find out what happened to the Ironsong and bring the truth home",
+      "rank": "formidable",
+      "hook": "The Ironsong was a cargo vessel — grain, mostly, and a sealed crate no one was allowed near. It went down six weeks ago in clear weather. The only survivor refuses to speak. Something was on that ship that shouldn't have been, and the people who sent it want the truth buried with the wreck.",
+      "firstScene": "You stand on the beach below the cliff where the wreck is visible at low tide. A man watches you from fifty yards away. He leaves when he sees you notice him."
+    },
+    {
+      "title": "The Light That Turns",
+      "vow": "I will discover what keeps the lighthouse burning and end it",
+      "rank": "dangerous",
+      "hook": "The lighthouse keeper died three winters ago. The keeper's log was found on the beach, waterlogged, the last entry smeared. But the light still turns, every night, drawing ships onto the rocks — six this year alone.",
+      "firstScene": "You reach the lighthouse at dusk. The door is unlocked. The mechanism at the top is turning. There is no oil in the lamp."
+    },
+    {
+      "title": "The Crate",
+      "vow": "I will find the sealed crate and decide what to do with what's inside",
+      "rank": "extreme",
+      "hook": "Before the Ironsong went down, a dockworker says he saw the crate move. Not shift — move. Three people have died trying to retrieve it from the wreck. The merchant who commissioned it has hired you now, offering more coin than you've seen in a year, and won't say what's inside.",
+      "firstScene": "The merchant meets you in a back room above a chandler's. She slides a key across the table. 'Don't open it until you've brought it to me. Don't open it under any circumstances.'"
+    },
+    {
+      "title": "The Stilt Village",
+      "vow": "I will find out who burned the houses and protect what remains of this place",
+      "rank": "dangerous",
+      "hook": "Three houses burned three nights ago. No one saw who lit them. The village of Cassock Reach has eight families left — the others left last winter saying the tides were wrong. The remaining families are terrified and won't say of what.",
+      "firstScene": "The village elder is a woman of seventy who speaks in short sentences. She hands you a tide-chart with dates circled in charcoal. 'They come when the tide does,' she says. 'Next time is three days.'"
+    },
+    {
+      "title": "The Drowned Bell",
+      "vow": "I will silence the bell beneath the chapel and lay to rest what rings it",
+      "rank": "formidable",
+      "hook": "The flooded chapel has been submerged for thirty years, since the sea-wall broke. The bell should be rusted solid. But on calm mornings it rings, and the fishing boats that go out after it rings don't come back.",
+      "firstScene": "You hear it at dawn from the headland. One long note, then silence. Down in the harbour, two fishermen are readying a boat. Their faces are blank."
+    },
+    {
+      "title": "The Spring Tide",
+      "vow": "I will be here when the sea-fort reappears and claim what it holds",
+      "rank": "extreme",
+      "hook": "Once every nineteen years, the lowest spring tide reveals the sea-fort on the Coldbar sandbar for six hours. The last time it surfaced, four people went out to it. One came back, said nothing, and died within the week. The next low water is in three days.",
+      "firstScene": "You've made camp on the headland above the bar. In the grey pre-dawn you can see something breaking the surface — angular, stone, definitely artificial. A boat is already heading out."
+    }
+  ],
+
+  "customOracles": [
+    {
+      "id": "dc-tide-weather",
+      "name": "Tide & Weather [Drowned Coast]",
+      "entries": [
+        "Dead calm — the sea is black glass, nothing moves",
+        "Sea mist rolling in fast, visibility dropping to twenty yards",
+        "Spring tide — the water is higher than expected, paths are cut off",
+        "Storm building on the horizon, six hours away at most",
+        "Neap tide — the water is low, things usually hidden are briefly visible",
+        "Rain, heavy, the kind that fills boots and dulls sound",
+        "Fog bank sitting on the headland, showing no sign of lifting",
+        "Wind picking up from the north — cold, salt-laden, carrying the smell of deep water",
+        "A lull between squalls — window of clear weather, not long",
+        "Rip current running along the beach, dangerous to swim, stronger than it looks"
+      ]
+    },
+    {
+      "id": "dc-coastal-encounter",
+      "name": "Coastal Encounter [Drowned Coast]",
+      "entries": [
+        "A ship's boat washed up with supplies intact but no sign of the crew",
+        "A figure standing at the waterline, not moving, facing the sea",
+        "Wreckage from something recent — the wood is barely waterlogged",
+        "A fisherman who won't say where he's been or what he caught",
+        "Smugglers moving crates along the beach at speed — they see you",
+        "A child standing on the cliff above, watching, gone when you look again",
+        "A sealed chest half-buried in shingle, lock intact",
+        "The body of a sailor, no wounds, expression of terror",
+        "A flock of seabirds all facing the same direction in silence",
+        "Lights moving under the water in the shallows — no natural explanation",
+        "A local who claims to know what happened to the last group that came here",
+        "Fresh drag-marks in the sand, from the waterline into the treeline"
+      ]
+    },
+    {
+      "id": "dc-npc",
+      "name": "NPC — Drowned Coast [Drowned Coast]",
+      "entries": [
+        "Harbourmaster, 60s, knows every ship that's passed through, owes a debt to someone dangerous",
+        "Fisherman's widow, pragmatic, will help you for practical reasons not sentimental ones",
+        "Merchant's factor, nervous, following orders they're uncomfortable with",
+        "Wreckers' lookout — young, not yet hardened, might be turned",
+        "Retired naval officer, drinks too much, knows the coast better than anyone alive",
+        "Rope-maker's apprentice, sees everything from the clifftop, doesn't know what it means",
+        "Customs inspector, ambitious, has his own investigation running",
+        "Kelp-cutter, works alone, has found things washed up they haven't told anyone about",
+        "Ship's cook, only survivor of something, won't discuss it but will talk around it",
+        "Village elder, last of the old families, keeps the old knowledge, not all of it useful"
+      ]
+    },
+    {
+      "id": "dc-complication",
+      "name": "Complication [Drowned Coast]",
+      "entries": [
+        "The tide comes in faster than expected — a route back is cut off",
+        "The wreck shifts in the swell, something unsettled inside it",
+        "Someone else was here first — and left in a hurry",
+        "The mist closes in and the landmark you were navigating by disappears",
+        "A rope, board, or handhold fails at the worst possible moment",
+        "A boat you needed is gone — taken, sunk, or drifted",
+        "Someone in the village has sent word about you to the wrong people",
+        "The weather window closes — the storm arrives hours early"
+      ]
+    }
+  ]
+}

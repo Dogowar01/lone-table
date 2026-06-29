@@ -4,7 +4,7 @@ const ASSETS = [
   '/lone-table/index.html',
   '/lone-table/sw.js',
   '/lone-table/manifest.webmanifest',
-  '/lone-table/bg.png',
+  '/lone-table/bg.jpg',
   '/lone-table/icon-192.png',
   '/lone-table/icon-512.png'
 ];

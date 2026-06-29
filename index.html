@@ -624,6 +624,9 @@ select option { background: var(--bg3); }
     <button class="nav-btn" data-screen="packs" onclick="showScreen('packs',this)">
       <span class="icon">🗺️</span>Packs
     </button>
+    <button class="nav-btn" data-screen="story" onclick="showScreen('story',this)">
+      <span class="icon">✍️</span>Story
+    </button>
     <button class="nav-btn" data-screen="about" onclick="showScreen('about',this)">
       <span class="icon">ℹ️</span>About
     </button>
@@ -823,6 +826,32 @@ select option { background: var(--bg3); }
           Choose File
           <input type="file" accept=".json" id="pack-import" onchange="importPack(event)" style="display:none">
         </label>
+      </div>
+    </div>
+
+    <!-- ── STORY ──────────────────────────────────────── -->
+    <div id="screen-story" class="screen">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <h2 style="margin-bottom:0">Story Journal</h2>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span id="story-saved-indicator" style="font-size:11px;color:var(--text-dim);opacity:0;transition:opacity 0.4s">Saved</span>
+          <button class="btn btn-sm" onclick="newStoryChapter()">+ Chapter</button>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Write the narrative as it unfolds. Autosaves as you type.</p>
+
+      <div id="chapter-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px"></div>
+
+      <div id="story-editor-wrap">
+        <textarea id="story-editor"
+          placeholder="The fire burns low at the lone table. Your journey begins…&#10;&#10;Write what happens here. Let the dice guide the shape of it."
+          oninput="onStoryInput()"
+          style="width:100%;min-height:60vh;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--font-serif);font-size:15px;line-height:1.8;padding:16px;outline:none;resize:vertical;"></textarea>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+        <span id="story-word-count" style="font-size:11px;color:var(--text-dim)"></span>
+        <button class="btn btn-sm btn-danger" onclick="deleteCurrentChapter()">Delete chapter</button>
       </div>
     </div>
 
@@ -1152,6 +1181,7 @@ function showScreen(id, btn) {
   if (id === 'log') renderLog();
   if (id === 'packs') renderPacks();
   if (id === 'play') populateOracleTables();
+  if (id === 'story') renderStory();
 }
 
 // ══════════════════════════════════════════════════
@@ -1807,7 +1837,8 @@ function toast(msg) {
 
 function confirmClear() {
   if (!confirm('Delete ALL character data, vows, and session log? This cannot be undone.')) return;
-  state = { char: defaultChar(), vows: [], log: [], packs: [] };
+  state = { char: defaultChar(), vows: [], log: [], packs: [], story: [{ title: 'Chapter 1', text: '' }] };
+  currentChapterIdx = 0;
   save();
   renderCharacter();
   renderVows();
@@ -1817,9 +1848,81 @@ function confirmClear() {
 }
 
 // ══════════════════════════════════════════════════
+// STORY JOURNAL
+// ══════════════════════════════════════════════════
+let storyAutoSaveTimer = null;
+let currentChapterIdx = 0;
+
+function initStory() {
+  if (!state.story) {
+    state.story = [{ title: 'Chapter 1', text: '' }];
+    save();
+  }
+}
+
+function renderStory() {
+  initStory();
+  const tabs = document.getElementById('chapter-tabs');
+  tabs.innerHTML = '';
+  state.story.forEach((ch, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-sm' + (i === currentChapterIdx ? ' btn-accent' : '');
+    btn.textContent = ch.title;
+    btn.onclick = () => { currentChapterIdx = i; renderStory(); };
+    // double-click to rename
+    btn.ondblclick = () => {
+      const name = prompt('Chapter name:', ch.title);
+      if (name && name.trim()) { state.story[i].title = name.trim(); save(); renderStory(); }
+    };
+    tabs.appendChild(btn);
+  });
+  const editor = document.getElementById('story-editor');
+  editor.value = state.story[currentChapterIdx].text;
+  updateWordCount();
+}
+
+function onStoryInput() {
+  state.story[currentChapterIdx].text = document.getElementById('story-editor').value;
+  updateWordCount();
+  clearTimeout(storyAutoSaveTimer);
+  storyAutoSaveTimer = setTimeout(() => {
+    save();
+    const ind = document.getElementById('story-saved-indicator');
+    ind.style.opacity = '1';
+    setTimeout(() => ind.style.opacity = '0', 1500);
+  }, 600);
+}
+
+function updateWordCount() {
+  const text = document.getElementById('story-editor').value;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  document.getElementById('story-word-count').textContent = words + ' word' + (words !== 1 ? 's' : '');
+}
+
+function newStoryChapter() {
+  initStory();
+  const num = state.story.length + 1;
+  state.story.push({ title: 'Chapter ' + num, text: '' });
+  currentChapterIdx = state.story.length - 1;
+  save();
+  renderStory();
+  document.getElementById('story-editor').focus();
+}
+
+function deleteCurrentChapter() {
+  if (state.story.length <= 1) { toast('Cannot delete the only chapter'); return; }
+  if (!confirm('Delete "' + state.story[currentChapterIdx].title + '"?')) return;
+  state.story.splice(currentChapterIdx, 1);
+  currentChapterIdx = Math.max(0, currentChapterIdx - 1);
+  save();
+  renderStory();
+}
+
+// ══════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════
 load();
+initStory();
 populateMoves();
 populateOracleTables();
 renderCharacter();
